@@ -20,7 +20,6 @@ public class ArticleController {
             @PathVariable String tag,
             @RequestParam(name = "Name", defaultValue = "TEST_NAME") String name
     ) {
-        String title = "Article with tag " + tag;
         int ranLikes = random.nextInt(500);
         int ranDislikes = random.nextInt(100);
         String ranContent = "This is an article content for article with tag " + tag;
