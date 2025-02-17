@@ -3,7 +3,6 @@ package com.example.simpleblogapi.controllers;
 import com.example.simpleblogapi.models.Article;
 import java.time.LocalDate;
 import java.security.SecureRandom;
-import java.util.Random;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
