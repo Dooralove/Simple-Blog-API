@@ -1,5 +1,6 @@
 package com.example.simpleblogapi.models;
 
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -10,14 +11,16 @@ public class Article {
     private int dislikes;
     private String content;
     private List<String> comments;
+    private String tag;
 
-    public Article(String title, LocalDate date, int likes, int dislikes, String content, List<String> comments) {
+    public Article(String title, LocalDate date, int likes, int dislikes, String content, List<String> comments, String tag) {
         this.title = title;
         this.date = date;
         this.likes = likes;
         this.dislikes = dislikes;
         this.content = content;
         this.comments = comments;
+        this.tag = tag;
     }
 
     public String getTitle() {
@@ -42,5 +45,9 @@ public class Article {
 
     public List<String> getComments() {
         return comments;
+    }
+
+    public String getTag() {
+        return tag;
     }
 }
