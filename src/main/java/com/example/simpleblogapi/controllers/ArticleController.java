@@ -11,12 +11,11 @@ import java.util.Random;
 @RestController
 public class ArticleController {
 
-    // Создаем один объект Random на уровне класса
     private static final Random random = new Random();
 
     @GetMapping("/articles")
     public Article getArticle(@RequestParam(name = "Name", defaultValue = "TEST_NAME") String name) {
-        int randomLikes = random.nextInt(500); // Используем ранее созданный random объект
+        int randomLikes = random.nextInt(500);
         return new Article(name, LocalDate.now(), randomLikes);
     }
 }
