@@ -1,6 +1,6 @@
-package com.example.Simple_Blog_API.controllers;
+package com.example.simpleblogapi.controllers;
 
-import com.example.Simple_Blog_API.models.Article;
+import com.example.simpleblogapi.models.Article;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,11 +11,15 @@ import java.util.Random;
 @RestController
 public class ArticleController {
 
+    // Создаем один объект Random на уровне класса
+    private static final Random random = new Random();
+
     @GetMapping("/articles")
     public Article getArticle(@RequestParam(name = "Name", defaultValue = "TEST_NAME") String name) {
-        Random random = new Random();
-        int randomLikes = random.nextInt(500);
-
-        return new Article(name , LocalDate.now(), randomLikes);
+        int randomLikes = random.nextInt(500); // Используем ранее созданный random объект
+        return new Article(name, LocalDate.now(), randomLikes);
     }
 }
+
+
+

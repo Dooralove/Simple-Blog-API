@@ -1,4 +1,4 @@
-package com.example.Simple_Blog_API.models;
+package com.example.simpleblogapi.models;
 
 import java.time.LocalDate;
 
