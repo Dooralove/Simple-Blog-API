@@ -20,11 +20,11 @@ public class ArticleController {
             @PathVariable String tag,
             @RequestParam(name = "Name", defaultValue = "TEST_NAME") String name
     ) {
-        int ranLikes = random.nextInt(500);
-        int ranDislikes = random.nextInt(100);
+        int ranLike = random.nextInt(500);
+        int ranDislike = random.nextInt(100);
         String ranContent = "This is an article content for article with tag " + tag;
-        List<String> ranComments = Arrays.asList("Great!", "Very helpful, thanks!", "Not bad.");
+        List<String> ranComment = Arrays.asList("Great!", "Very helpful, thanks!", "Not bad.");
 
-        return new Article(name, LocalDate.now(), ranLikes, ranDislikes, ranContent, ranComments, tag);
+        return new Article(name, LocalDate.now(), ranLike, ranDislike, ranContent, ranComment, tag);
     }
 }
