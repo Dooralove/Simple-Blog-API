@@ -1,59 +1,41 @@
 package com.example.simpleblogapi.entities;
 
-import java.time.LocalDate;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
+@Entity
+@Table(name = "articles")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ArticleEntity {
-    private int id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 255)
     private String title;
-    private LocalDate date;
-    private int likes;
-    private int dislikes;
+
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
-    private List<String> comments;
-    private String tag;
 
-    public ArticleEntity(int id, String title, LocalDate date, int likes, int dislikes,
-                         String content, List<String> comments, String tag) {
-        this.id = id;
-        this.title = title;
-        this.date = date;
-        this.likes = likes;
-        this.dislikes = dislikes;
-        this.content = content;
-        this.comments = comments;
-        this.tag = tag;
-    }
+    @Column(nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    public int getId() {
-        return id;
-    }
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentEntity> comments;
 
-    public String getTitle() {
-        return title;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public int getLikes() {
-        return likes;
-    }
-
-    public int getDislikes() {
-        return dislikes;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public List<String> getComments() {
-        return comments;
-    }
-
-    public String getTag() {
-        return tag;
-    }
+    @ManyToMany
+    @JoinTable(
+            name = "article_tags",
+            joinColumns = @JoinColumn(name = "article_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<TagEntity> tags;
 }

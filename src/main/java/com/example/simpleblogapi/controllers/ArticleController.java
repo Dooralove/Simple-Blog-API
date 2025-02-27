@@ -1,35 +1,46 @@
 package com.example.simpleblogapi.controllers;
 
 import com.example.simpleblogapi.entities.ArticleEntity;
-import com.example.simpleblogapi.service.ArticleService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.simpleblogapi.entities.CommentEntity;
+import com.example.simpleblogapi.entities.TagEntity;
+import com.example.simpleblogapi.repositories.ArticleRepository;
+import com.example.simpleblogapi.repositories.CommentRepository;
+import com.example.simpleblogapi.repositories.TagRepository;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/articles")
 public class ArticleController {
 
-    private final ArticleService articleService;
+    private final ArticleRepository articleRepository;
+    private final CommentRepository commentRepository;
+    private final TagRepository tagRepository;
 
-    @Autowired
-    public ArticleController(ArticleService articleService) {
-        this.articleService = articleService;
+    public ArticleController(ArticleRepository articleRepository, CommentRepository commentRepository, TagRepository tagRepository) {
+        this.articleRepository = articleRepository;
+        this.commentRepository = commentRepository;
+        this.tagRepository = tagRepository;
     }
 
-    @GetMapping("/articles/{id}")
-    public ArticleEntity getArticleById(
-            @PathVariable int id
-    ) {
-        return articleService.getArticleById(id);
+    @PostMapping("/create")
+    public ArticleEntity createArticle(@RequestBody ArticleEntity article) {
+        return articleRepository.save(article);
     }
 
-    @GetMapping("/articles")
-    public ArticleEntity getArticleByName(
-            @RequestParam(name = "Name", required = false, defaultValue = "DefaultArticle") String name,
-            @RequestParam(name = "Tag", required = false, defaultValue = "General") String tag
-    ) {
-        return articleService.getArticleByNameAndTag(name, tag);
+    @GetMapping("/{id}")
+    public ArticleEntity getArticleById(@PathVariable Long id) {
+        return articleRepository.findById(id).orElseThrow(() -> new RuntimeException("Article not found"));
+    }
+
+    @GetMapping("/all")
+    public List<ArticleEntity> getAllArticles() {
+        return articleRepository.findAll();
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteArticle(@PathVariable Long id) {
+        articleRepository.deleteById(id);
     }
 }
