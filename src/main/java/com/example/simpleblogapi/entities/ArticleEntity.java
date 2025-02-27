@@ -1,10 +1,10 @@
-package com.example.simpleblogapi.models;
-
+package com.example.simpleblogapi.entities;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class Article {
+public class ArticleEntity {
+    private int id;
     private String title;
     private LocalDate date;
     private int likes;
@@ -13,7 +13,9 @@ public class Article {
     private List<String> comments;
     private String tag;
 
-    public Article(String title, LocalDate date, int likes, int dislikes, String content, List<String> comments, String tag) {
+    public ArticleEntity(int id, String title, LocalDate date, int likes, int dislikes,
+                         String content, List<String> comments, String tag) {
+        this.id = id;
         this.title = title;
         this.date = date;
         this.likes = likes;
@@ -21,6 +23,10 @@ public class Article {
         this.content = content;
         this.comments = comments;
         this.tag = tag;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getTitle() {
