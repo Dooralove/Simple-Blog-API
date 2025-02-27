@@ -2,9 +2,8 @@ package com.example.simpleblogapi.service;
 
 import com.example.simpleblogapi.entities.ArticleEntity;
 import com.example.simpleblogapi.repositories.ArticleRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ArticleService {
@@ -20,7 +19,8 @@ public class ArticleService {
     }
 
     public ArticleEntity getArticleById(Long id) {
-        return articleRepository.findById(id).orElseThrow(() -> new RuntimeException("Article not found"));
+        return articleRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Article not found"));
     }
 
     public ArticleEntity createArticle(ArticleEntity article) {
