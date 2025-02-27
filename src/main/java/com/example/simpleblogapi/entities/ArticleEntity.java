@@ -1,5 +1,6 @@
 package com.example.simpleblogapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 
 @Entity
@@ -43,6 +45,7 @@ public class ArticleEntity {
 
     @OneToMany(mappedBy = "article", cascade = jakarta.persistence.CascadeType.ALL,
             orphanRemoval = true)
+    @JsonManagedReference
     private List<CommentEntity> comments;
 
     @ManyToMany

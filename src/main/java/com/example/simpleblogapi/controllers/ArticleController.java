@@ -1,14 +1,17 @@
 package com.example.simpleblogapi.controllers;
 
 import com.example.simpleblogapi.entities.ArticleEntity;
+import com.example.simpleblogapi.entities.TagEntity;
 import com.example.simpleblogapi.repositories.ArticleRepository;
 import com.example.simpleblogapi.repositories.CommentRepository;
 import com.example.simpleblogapi.repositories.TagRepository;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,5 +51,20 @@ public class ArticleController {
     @DeleteMapping("/{id}")
     public void deleteArticle(@PathVariable Long id) {
         articleRepository.deleteById(id);
+    }
+
+    @PutMapping("/{articleId}/tags/{tagId}")
+    public ArticleEntity addTagToArticle(@PathVariable Long articleId, @PathVariable Long tagId) {
+        Optional<ArticleEntity> optionalArticle = articleRepository.findById(articleId);
+        Optional<TagEntity> optionalTag = tagRepository.findById(tagId);
+
+        if (optionalArticle.isPresent() && optionalTag.isPresent()) {
+            ArticleEntity article = optionalArticle.get();
+            TagEntity tag = optionalTag.get();
+            article.getTags().add(tag);
+            return articleRepository.save(article);
+        } else {
+            throw new RuntimeException("Article or Tag not found");
+        }
     }
 }
