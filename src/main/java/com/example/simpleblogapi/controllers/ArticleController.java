@@ -37,7 +37,11 @@ public class ArticleController {
 
     @GetMapping("/all")
     public List<ArticleEntity> getAllArticles() {
-        return articleService.getAllArticles();
+        List<ArticleEntity> articles = articleService.getAllArticles();
+        if (articles.isEmpty()) {
+            System.out.println("No articles found!");
+        }
+        return articles;
     }
 
     @GetMapping("/by-tag")

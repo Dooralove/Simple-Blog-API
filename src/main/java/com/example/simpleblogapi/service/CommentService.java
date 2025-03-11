@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class CommentService {
 
@@ -32,8 +31,11 @@ public class CommentService {
         commentCache.remove(articleId);
     }
 
-
     public void clearAllCache() {
         commentCache.clear();
+    }
+
+    public CommentEntity createComment(CommentEntity commentEntity) {
+        return commentRepository.save(commentEntity);
     }
 }
