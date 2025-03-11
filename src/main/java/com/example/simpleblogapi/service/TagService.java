@@ -3,9 +3,8 @@ package com.example.simpleblogapi.service;
 import com.example.simpleblogapi.cache.TagCache;
 import com.example.simpleblogapi.entities.TagEntity;
 import com.example.simpleblogapi.repositories.TagRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class TagService {
@@ -27,7 +26,8 @@ public class TagService {
             return tagCache.getTag(id);
         }
 
-        TagEntity tag = tagRepository.findById(id).orElseThrow(() -> new RuntimeException("Tag not found"));
+        TagEntity tag = tagRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Tag not found"));
         tagCache.putTag(id, tag);
         return tag;
     }

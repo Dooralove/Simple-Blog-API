@@ -1,10 +1,10 @@
 package com.example.simpleblogapi.cache;
 
 import com.example.simpleblogapi.entities.TagEntity;
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.stereotype.Component;
+
 
 @Component
 public class TagCache {

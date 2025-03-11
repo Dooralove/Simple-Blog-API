@@ -5,25 +5,20 @@ import com.example.simpleblogapi.entities.TagEntity;
 import com.example.simpleblogapi.exceptions.ResourceNotFoundException;
 import com.example.simpleblogapi.repositories.ArticleRepository;
 import com.example.simpleblogapi.repositories.TagRepository;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
     private final TagRepository tagRepository;
-    private final Map<String, List<ArticleEntity>> articleCache;
 
-    public ArticleService(ArticleRepository articleRepository,
-                          TagRepository tagRepository,
-                          Map<String, List<ArticleEntity>> articleCache) {
+    public ArticleService(ArticleRepository articleRepository, TagRepository tagRepository) {
         this.articleRepository = articleRepository;
         this.tagRepository = tagRepository;
-        this.articleCache = articleCache;
     }
 
     public List<ArticleEntity> getAllArticles() {
@@ -44,13 +39,7 @@ public class ArticleService {
     }
 
     public List<ArticleEntity> getArticlesByTagName(String tagName) {
-        if (articleCache.containsKey(tagName)) {
-            return articleCache.get(tagName);
-        }
-
-        List<ArticleEntity> articles = articleRepository.findArticlesByTagName(tagName);
-        articleCache.put(tagName, articles);
-        return articles;
+        return articleRepository.findArticlesByTagName(tagName);
     }
 
     public ArticleEntity addTagToArticle(Long articleId, Long tagId) {

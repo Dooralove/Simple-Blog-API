@@ -2,11 +2,11 @@ package com.example.simpleblogapi.service;
 
 import com.example.simpleblogapi.entities.CommentEntity;
 import com.example.simpleblogapi.repositories.CommentRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Service;
+
 
 @Service
 public class CommentService {
