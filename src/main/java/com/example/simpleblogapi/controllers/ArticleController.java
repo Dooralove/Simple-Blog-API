@@ -37,8 +37,7 @@ public class ArticleController {
 
     @GetMapping("/all")
     public List<ArticleEntity> getAllArticles() {
-        List<ArticleEntity> articles = articleService.getAllArticles();
-        return articles;
+        return articleService.getAllArticles();
     }
 
     @GetMapping("/by-tag")
