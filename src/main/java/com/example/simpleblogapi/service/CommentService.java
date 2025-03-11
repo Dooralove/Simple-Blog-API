@@ -23,7 +23,6 @@ public class CommentService {
             return commentCache.get(articleId);
         }
 
-        // Иначе загружаем из БД и сохраняем в кэш
         List<CommentEntity> comments = commentRepository.findCommentsByArticleId(articleId);
         commentCache.put(articleId, comments);
         return comments;

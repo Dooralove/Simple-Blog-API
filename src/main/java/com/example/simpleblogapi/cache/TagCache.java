@@ -9,21 +9,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class TagCache {
 
-    private final Map<Long, TagEntity> tagCache = new HashMap<>();
+    private final Map<Long, TagEntity> tagEntityCache = new HashMap<>();
 
     public TagEntity getTag(Long id) {
-        return tagCache.get(id);
+        return tagEntityCache.get(id);
     }
 
     public void putTag(Long id, TagEntity tag) {
-        tagCache.put(id, tag);
+        tagEntityCache.put(id, tag);
     }
 
     public boolean contains(Long id) {
-        return tagCache.containsKey(id);
+        return tagEntityCache.containsKey(id);
     }
 
     public void clear() {
-        tagCache.clear();
+        tagEntityCache.clear();
     }
 }
