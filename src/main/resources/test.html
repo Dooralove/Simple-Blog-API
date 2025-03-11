@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="http://localhost:8080" content="width=device-width, initial-scale=1.0">
+    <title>Управление статьями</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        input {
+            padding: 5px;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+<h1>Управление статьями</h1>
+<button onclick="createArticle()">Создать статью</button>
+<br>
+<input type="text" id="articleId" placeholder="Введите ID статьи">
+<button onclick="getArticleById()">Получить статью по ID</button>
+<br>
+<div class="result" id="result"></div>
+<script src="script.js"></script>
+</body>
+</html>
