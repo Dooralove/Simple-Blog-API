@@ -38,9 +38,6 @@ public class ArticleController {
     @GetMapping("/all")
     public List<ArticleEntity> getAllArticles() {
         List<ArticleEntity> articles = articleService.getAllArticles();
-        if (articles.isEmpty()) {
-            System.out.println("No articles found!");
-        }
         return articles;
     }
 
