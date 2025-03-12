@@ -44,4 +44,17 @@ public class TagService {
     public List<TagEntity> getTagsByNameContaining(String namePart) {
         return tagRepository.findByNameContaining(namePart);
     }
+
+    public TagEntity updateTag(Long id, TagEntity tag) {
+        TagEntity existingTag = tagRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Tag not found"));
+
+        existingTag.setName(tag.getName());
+
+        TagEntity updatedTag = tagRepository.save(existingTag);
+
+        tagCache.putTag(id, updatedTag);
+
+        return updatedTag;
+    }
 }
