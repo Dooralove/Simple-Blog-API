@@ -60,4 +60,24 @@ public class ArticleController {
                                               @PathVariable Long tagId) {
         return articleService.removeTagFromArticle(articleId, tagId);
     }
+
+    @PostMapping("/{id}/like")
+    public ArticleEntity likeArticle(@PathVariable Long id) {
+        return articleService.likeArticle(id);
+    }
+
+    @PostMapping("/{id}/dislike")
+    public ArticleEntity dislikeArticle(@PathVariable Long id) {
+        return articleService.dislikeArticle(id);
+    }
+
+    @DeleteMapping("/{id}/like")
+    public ArticleEntity removeLike(@PathVariable Long id) {
+        return articleService.removeLike(id);
+    }
+
+    @DeleteMapping("/{id}/dislike")
+    public ArticleEntity removeDislike(@PathVariable Long id) {
+        return articleService.removeDislike(id);
+    }
 }

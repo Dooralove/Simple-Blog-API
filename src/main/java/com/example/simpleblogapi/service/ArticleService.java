@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class ArticleService {
 
@@ -68,5 +67,35 @@ public class ArticleService {
         } else {
             throw new ResourceNotFoundException("Article or Tag not found");
         }
+    }
+
+    // Методы для управления лайками и дизлайками
+
+    public ArticleEntity likeArticle(Long id) {
+        ArticleEntity article = getArticleById(id);
+        article.setLikes(article.getLikes() + 1);
+        return articleRepository.save(article);
+    }
+
+    public ArticleEntity dislikeArticle(Long id) {
+        ArticleEntity article = getArticleById(id);
+        article.setDislikes(article.getDislikes() + 1);
+        return articleRepository.save(article);
+    }
+
+    public ArticleEntity removeLike(Long id) {
+        ArticleEntity article = getArticleById(id);
+        if (article.getLikes() > 0) {
+            article.setLikes(article.getLikes() - 1);
+        }
+        return articleRepository.save(article);
+    }
+
+    public ArticleEntity removeDislike(Long id) {
+        ArticleEntity article = getArticleById(id);
+        if (article.getDislikes() > 0) {
+            article.setDislikes(article.getDislikes() - 1);
+        }
+        return articleRepository.save(article);
     }
 }
