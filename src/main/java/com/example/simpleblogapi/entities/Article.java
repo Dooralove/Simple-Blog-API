@@ -53,7 +53,8 @@ public class Article {
     @Column(nullable = false)
     private int dislikes = 0;
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Comment> comments;
 
     @ManyToMany(fetch = FetchType.LAZY)
