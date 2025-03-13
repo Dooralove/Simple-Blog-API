@@ -1,7 +1,7 @@
 package com.example.simpleblogapi.service;
 
 import com.example.simpleblogapi.cache.TagCache;
-import com.example.simpleblogapi.entities.TagEntity;
+import com.example.simpleblogapi.entities.Tag;
 import com.example.simpleblogapi.repositories.TagRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -17,22 +17,22 @@ public class TagService {
         this.tagCache = tagCache;
     }
 
-    public List<TagEntity> getAllTags() {
+    public List<Tag> getAllTags() {
         return tagRepository.findAll();
     }
 
-    public TagEntity getTagById(Long id) {
+    public Tag getTagById(Long id) {
         if (tagCache.contains(id)) {
             return tagCache.getTag(id);
         }
 
-        TagEntity tag = tagRepository.findById(id).orElseThrow(() ->
+        Tag tag = tagRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Tag not found"));
         tagCache.putTag(id, tag);
         return tag;
     }
 
-    public TagEntity createTag(TagEntity tag) {
+    public Tag createTag(Tag tag) {
         return tagRepository.save(tag);
     }
 
@@ -41,17 +41,18 @@ public class TagService {
         tagCache.clear();
     }
 
-    public List<TagEntity> getTagsByNameContaining(String namePart) {
-        return tagRepository.findByNameContaining(namePart);
+    public Tag getOrCreateTag(String tagName) {
+        return tagRepository.findByName(tagName)
+                .orElseGet(() -> tagRepository.save(new Tag(null, tagName, null)));
     }
 
-    public TagEntity updateTag(Long id, TagEntity tag) {
-        TagEntity existingTag = tagRepository.findById(id).orElseThrow(() ->
+    public Tag updateTag(Long id, Tag tag) {
+        Tag existingTag = tagRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Tag not found"));
 
         existingTag.setName(tag.getName());
 
-        TagEntity updatedTag = tagRepository.save(existingTag);
+        Tag updatedTag = tagRepository.save(existingTag);
 
         tagCache.putTag(id, updatedTag);
 

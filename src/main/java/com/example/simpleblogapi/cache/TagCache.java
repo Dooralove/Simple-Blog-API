@@ -1,6 +1,6 @@
 package com.example.simpleblogapi.cache;
 
-import com.example.simpleblogapi.entities.TagEntity;
+import com.example.simpleblogapi.entities.Tag;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.stereotype.Component;
@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class TagCache {
 
-    private final Map<Long, TagEntity> tagEntityCache = new HashMap<>();
+    private final Map<Long, Tag> tagEntityCache = new HashMap<>();
 
-    public TagEntity getTag(Long id) {
+    public Tag getTag(Long id) {
         return tagEntityCache.get(id);
     }
 
-    public void putTag(Long id, TagEntity tag) {
+    public void putTag(Long id, Tag tag) {
         tagEntityCache.put(id, tag);
     }
 

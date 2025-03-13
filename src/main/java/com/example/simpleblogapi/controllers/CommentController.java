@@ -1,6 +1,6 @@
 package com.example.simpleblogapi.controllers;
 
-import com.example.simpleblogapi.entities.CommentEntity;
+import com.example.simpleblogapi.entities.Comment;
 import com.example.simpleblogapi.service.CommentService;
 import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,7 +24,7 @@ public class CommentController {
     }
 
     @GetMapping("/by-article/{articleId}")
-    public List<CommentEntity> getCommentsByArticle(@PathVariable Long articleId) {
+    public List<Comment> getCommentsByArticle(@PathVariable Long articleId) {
         return commentService.getCommentsByArticle(articleId);
     }
 
@@ -39,7 +39,7 @@ public class CommentController {
     }
 
     @PostMapping("/create")
-    public CommentEntity createComment(@RequestBody CommentEntity commentEntity) {
+    public Comment createComment(@RequestBody Comment commentEntity) {
         return commentService.createComment(commentEntity);
     }
 }

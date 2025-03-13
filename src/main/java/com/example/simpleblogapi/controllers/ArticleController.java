@@ -1,6 +1,6 @@
 package com.example.simpleblogapi.controllers;
 
-import com.example.simpleblogapi.entities.ArticleEntity;
+import com.example.simpleblogapi.entities.Article;
 import com.example.simpleblogapi.service.ArticleService;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,23 +25,23 @@ public class ArticleController {
     }
 
     @PostMapping("/create")
-    public ArticleEntity createArticle(@RequestBody ArticleEntity article) {
+    public Article createArticle(@RequestBody Article article) {
         article.setCreatedAt(LocalDateTime.now());
         return articleService.createArticle(article);
     }
 
     @GetMapping("/{id}")
-    public ArticleEntity getArticleById(@PathVariable Long id) {
+    public Article getArticleById(@PathVariable Long id) {
         return articleService.getArticleById(id);
     }
 
     @GetMapping("/all")
-    public List<ArticleEntity> getAllArticles() {
+    public List<Article> getAllArticles() {
         return articleService.getAllArticles();
     }
 
     @GetMapping("/by-tag")
-    public List<ArticleEntity> getArticlesByTagName(@RequestParam String tagName) {
+    public List<Article> getArticlesByTagName(@RequestParam String tagName) {
         return articleService.getArticlesByTagName(tagName);
     }
 
@@ -51,33 +51,33 @@ public class ArticleController {
     }
 
     @PutMapping("/{articleId}/tags/{tagId}")
-    public ArticleEntity addTagToArticle(@PathVariable Long articleId, @PathVariable Long tagId) {
+    public Article addTagToArticle(@PathVariable Long articleId, @PathVariable Long tagId) {
         return articleService.addTagToArticle(articleId, tagId);
     }
 
     @DeleteMapping("/{articleId}/tags/{tagId}")
-    public ArticleEntity removeTagFromArticle(@PathVariable Long articleId,
-                                              @PathVariable Long tagId) {
+    public Article removeTagFromArticle(@PathVariable Long articleId,
+                                        @PathVariable Long tagId) {
         return articleService.removeTagFromArticle(articleId, tagId);
     }
 
     @PostMapping("/{id}/like")
-    public ArticleEntity likeArticle(@PathVariable Long id) {
+    public Article likeArticle(@PathVariable Long id) {
         return articleService.likeArticle(id);
     }
 
     @PostMapping("/{id}/dislike")
-    public ArticleEntity dislikeArticle(@PathVariable Long id) {
+    public Article dislikeArticle(@PathVariable Long id) {
         return articleService.dislikeArticle(id);
     }
 
     @DeleteMapping("/{id}/like")
-    public ArticleEntity removeLike(@PathVariable Long id) {
+    public Article removeLike(@PathVariable Long id) {
         return articleService.removeLike(id);
     }
 
     @DeleteMapping("/{id}/dislike")
-    public ArticleEntity removeDislike(@PathVariable Long id) {
+    public Article removeDislike(@PathVariable Long id) {
         return articleService.removeDislike(id);
     }
 }

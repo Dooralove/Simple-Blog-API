@@ -1,7 +1,7 @@
 package com.example.simpleblogapi.service;
 
-import com.example.simpleblogapi.entities.ArticleEntity;
-import com.example.simpleblogapi.entities.TagEntity;
+import com.example.simpleblogapi.entities.Article;
+import com.example.simpleblogapi.entities.Tag;
 import com.example.simpleblogapi.exceptions.ResourceNotFoundException;
 import com.example.simpleblogapi.repositories.ArticleRepository;
 import com.example.simpleblogapi.repositories.TagRepository;
@@ -20,16 +20,16 @@ public class ArticleService {
         this.tagRepository = tagRepository;
     }
 
-    public List<ArticleEntity> getAllArticles() {
+    public List<Article> getAllArticles() {
         return articleRepository.findAll();
     }
 
-    public ArticleEntity getArticleById(Long id) {
+    public Article getArticleById(Long id) {
         return articleRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Article not found"));
     }
 
-    public ArticleEntity createArticle(ArticleEntity article) {
+    public Article createArticle(Article article) {
         return articleRepository.save(article);
     }
 
@@ -37,17 +37,17 @@ public class ArticleService {
         articleRepository.deleteById(id);
     }
 
-    public List<ArticleEntity> getArticlesByTagName(String tagName) {
+    public List<Article> getArticlesByTagName(String tagName) {
         return articleRepository.findArticlesByTagName(tagName);
     }
 
-    public ArticleEntity addTagToArticle(Long articleId, Long tagId) {
-        Optional<ArticleEntity> optionalArticle = articleRepository.findById(articleId);
-        Optional<TagEntity> optionalTag = tagRepository.findById(tagId);
+    public Article addTagToArticle(Long articleId, Long tagId) {
+        Optional<Article> optionalArticle = articleRepository.findById(articleId);
+        Optional<Tag> optionalTag = tagRepository.findById(tagId);
 
         if (optionalArticle.isPresent() && optionalTag.isPresent()) {
-            ArticleEntity article = optionalArticle.get();
-            TagEntity tag = optionalTag.get();
+            Article article = optionalArticle.get();
+            Tag tag = optionalTag.get();
             article.getTags().add(tag);
             return articleRepository.save(article);
         } else {
@@ -55,13 +55,13 @@ public class ArticleService {
         }
     }
 
-    public ArticleEntity removeTagFromArticle(Long articleId, Long tagId) {
-        Optional<ArticleEntity> optionalArticle = articleRepository.findById(articleId);
-        Optional<TagEntity> optionalTag = tagRepository.findById(tagId);
+    public Article removeTagFromArticle(Long articleId, Long tagId) {
+        Optional<Article> optionalArticle = articleRepository.findById(articleId);
+        Optional<Tag> optionalTag = tagRepository.findById(tagId);
 
         if (optionalArticle.isPresent() && optionalTag.isPresent()) {
-            ArticleEntity article = optionalArticle.get();
-            TagEntity tag = optionalTag.get();
+            Article article = optionalArticle.get();
+            Tag tag = optionalTag.get();
             article.getTags().remove(tag);
             return articleRepository.save(article);
         } else {
@@ -69,30 +69,28 @@ public class ArticleService {
         }
     }
 
-    // Методы для управления лайками и дизлайками
-
-    public ArticleEntity likeArticle(Long id) {
-        ArticleEntity article = getArticleById(id);
+    public Article likeArticle(Long id) {
+        Article article = getArticleById(id);
         article.setLikes(article.getLikes() + 1);
         return articleRepository.save(article);
     }
 
-    public ArticleEntity dislikeArticle(Long id) {
-        ArticleEntity article = getArticleById(id);
+    public Article dislikeArticle(Long id) {
+        Article article = getArticleById(id);
         article.setDislikes(article.getDislikes() + 1);
         return articleRepository.save(article);
     }
 
-    public ArticleEntity removeLike(Long id) {
-        ArticleEntity article = getArticleById(id);
+    public Article removeLike(Long id) {
+        Article article = getArticleById(id);
         if (article.getLikes() > 0) {
             article.setLikes(article.getLikes() - 1);
         }
         return articleRepository.save(article);
     }
 
-    public ArticleEntity removeDislike(Long id) {
-        ArticleEntity article = getArticleById(id);
+    public Article removeDislike(Long id) {
+        Article article = getArticleById(id);
         if (article.getDislikes() > 0) {
             article.setDislikes(article.getDislikes() - 1);
         }

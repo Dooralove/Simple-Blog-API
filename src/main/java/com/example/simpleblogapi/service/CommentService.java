@@ -1,6 +1,6 @@
 package com.example.simpleblogapi.service;
 
-import com.example.simpleblogapi.entities.CommentEntity;
+import com.example.simpleblogapi.entities.Comment;
 import com.example.simpleblogapi.repositories.CommentRepository;
 import java.util.HashMap;
 import java.util.List;
@@ -11,18 +11,18 @@ import org.springframework.stereotype.Service;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final Map<Long, List<CommentEntity>> commentCache = new HashMap<>();
+    private final Map<Long, List<Comment>> commentCache = new HashMap<>();
 
     public CommentService(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
     }
 
-    public List<CommentEntity> getCommentsByArticle(Long articleId) {
+    public List<Comment> getCommentsByArticle(Long articleId) {
         if (commentCache.containsKey(articleId)) {
             return commentCache.get(articleId);
         }
 
-        List<CommentEntity> comments = commentRepository.findCommentsByArticleId(articleId);
+        List<Comment> comments = commentRepository.findCommentsByArticleId(articleId);
         commentCache.put(articleId, comments);
         return comments;
     }
@@ -35,7 +35,7 @@ public class CommentService {
         commentCache.clear();
     }
 
-    public CommentEntity createComment(CommentEntity commentEntity) {
+    public Comment createComment(Comment commentEntity) {
         return commentRepository.save(commentEntity);
     }
 }
