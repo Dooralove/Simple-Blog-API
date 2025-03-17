@@ -1,13 +1,14 @@
 package com.example.simpleblogapi.controllers;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.ResponseEntity;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.io.IOException;
+
 
 @RestController
 public class LogController {

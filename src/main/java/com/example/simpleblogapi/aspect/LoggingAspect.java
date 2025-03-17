@@ -26,6 +26,6 @@ public class LoggingAspect {
 
     @AfterThrowing(value = "execution(* com.example.simpleblogapi.controllers.*.*(..))", throwing = "exception")
     public void logAfterThrowing(Exception exception) {
-        logger.error("An error occurred: " + exception.getMessage(), exception);
+        logger.error("An error occurred: {}", exception.getMessage(), exception);
     }
 }
