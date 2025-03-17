@@ -23,12 +23,16 @@ public class TagService {
 
     public Tag getTagById(Long id) {
         if (tagCache.contains(id)) {
+            System.out.println("Fetching tag from cache: ID = " + id);
             return tagCache.getTag(id);
         }
 
         Tag tag = tagRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Tag not found"));
+
         tagCache.putTag(id, tag);
+        System.out.println("Caching tag: ID = " + id);
+
         return tag;
     }
 
@@ -38,7 +42,8 @@ public class TagService {
 
     public void deleteTag(Long id) {
         tagRepository.deleteById(id);
-        tagCache.clear();
+        tagCache.removeTag(id);
+        System.out.println("Removed tag from cache: ID = " + id);
     }
 
     public Tag getOrCreateTag(String tagName) {
@@ -55,7 +60,12 @@ public class TagService {
         Tag updatedTag = tagRepository.save(existingTag);
 
         tagCache.putTag(id, updatedTag);
+        System.out.println("Updated tag in cache: ID = " + id);
 
         return updatedTag;
+    }
+
+    public List<Tag> searchTagsByName(String name) {
+        return tagRepository.searchTagsByName(name);
     }
 }

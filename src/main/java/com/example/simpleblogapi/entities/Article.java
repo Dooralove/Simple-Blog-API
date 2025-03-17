@@ -30,7 +30,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Для корректной сериализации
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Article {
 
     @Id
