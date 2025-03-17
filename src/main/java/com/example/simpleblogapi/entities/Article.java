@@ -22,7 +22,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
-
 @Entity
 @Table(name = "articles")
 @Getter
@@ -57,7 +56,7 @@ public class Article {
             fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Comment> comments;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "article_tags",
             joinColumns = @JoinColumn(name = "article_id"),
