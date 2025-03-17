@@ -4,10 +4,14 @@ import com.example.simpleblogapi.cache.TagCache;
 import com.example.simpleblogapi.entities.Tag;
 import com.example.simpleblogapi.repositories.TagRepository;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TagService {
+
+    private static final Logger logger = LoggerFactory.getLogger(TagService.class);
 
     private final TagRepository tagRepository;
     private final TagCache tagCache;
@@ -23,15 +27,14 @@ public class TagService {
 
     public Tag getTagById(Long id) {
         if (tagCache.contains(id)) {
-            System.out.println("Fetching tag from cache: ID = " + id);
+            logger.info("Fetching tag from cache: ID = {}", id);
             return tagCache.getTag(id);
         }
 
-        Tag tag = tagRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Tag not found"));
-
+        Tag tag = tagRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tag not found"));
         tagCache.putTag(id, tag);
-        System.out.println("Caching tag: ID = " + id);
+        logger.info("Caching tag: ID = {}", id);
 
         return tag;
     }
@@ -43,7 +46,7 @@ public class TagService {
     public void deleteTag(Long id) {
         tagRepository.deleteById(id);
         tagCache.removeTag(id);
-        System.out.println("Removed tag from cache: ID = " + id);
+        logger.info("Removed tag from cache: ID = {}", id);
     }
 
     public Tag getOrCreateTag(String tagName) {
@@ -52,15 +55,13 @@ public class TagService {
     }
 
     public Tag updateTag(Long id, Tag tag) {
-        Tag existingTag = tagRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Tag not found"));
+        Tag existingTag = tagRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tag not found"));
 
         existingTag.setName(tag.getName());
-
         Tag updatedTag = tagRepository.save(existingTag);
-
         tagCache.putTag(id, updatedTag);
-        System.out.println("Updated tag in cache: ID = " + id);
+        logger.info("Updated tag in cache: ID = {}", id);
 
         return updatedTag;
     }

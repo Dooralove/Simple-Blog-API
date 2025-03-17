@@ -7,9 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
-    @Query("SELECT a FROM Article a JOIN a.tags t WHERE t.name = :tagName")
+    @Query("SELECT a FROM Article a JOIN a.tags t WHERE LOWER(t.name) = LOWER(:tagName)")
     List<Article> findArticlesByTagName(@Param("tagName") String tagName);
 }
