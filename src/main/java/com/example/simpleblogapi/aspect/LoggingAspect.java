@@ -1,12 +1,12 @@
 package com.example.simpleblogapi.aspect;
 
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 @Aspect
 @Component
@@ -24,7 +24,8 @@ public class LoggingAspect {
         logger.info("Method execution completed.");
     }
 
-    @AfterThrowing(value = "execution(* com.example.simpleblogapi.controllers.*.*(..))", throwing = "exception")
+    @AfterThrowing(value = "execution(* com.example.simpleblogapi.controllers.*.*(..))",
+            throwing = "exception")
     public void logAfterThrowing(Exception exception) {
         logger.error("An error occurred: {}", exception.getMessage(), exception);
     }
