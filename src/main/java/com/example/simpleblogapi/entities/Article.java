@@ -56,7 +56,8 @@ public class Article {
             fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Comment> comments;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH,
+        CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "article_tags",
             joinColumns = @JoinColumn(name = "article_id"),
