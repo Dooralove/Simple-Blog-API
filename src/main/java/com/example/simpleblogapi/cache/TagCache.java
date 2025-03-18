@@ -10,13 +10,14 @@ import org.springframework.stereotype.Component;
 public class TagCache {
 
     private static final int MAX_CACHE_SIZE = 100;
+
     private static final Logger logger = Logger.getLogger(TagCache.class.getName());
 
-
     private final Map<Long, Tag> tagEntityCache = new LinkedHashMap<>(MAX_CACHE_SIZE, 0.75f, true) {
+
         @Override
         protected boolean removeEldestEntry(Map.Entry<Long, Tag> eldest) {
-            boolean remove = size() > MAX_CACHE_SIZE;
+            boolean remove = super.size() > MAX_CACHE_SIZE;  
             if (remove) {
                 logger.info("Removed eldest entry: " + eldest.getKey() + " from cache.");
             }
@@ -49,7 +50,8 @@ public class TagCache {
     }
 
     public void printCache() {
+        // Заменим System.out.println() на логирование
         tagEntityCache.forEach((key, value) ->
-                System.out.println("Key: " + key + ", Tag: " + value));
+                logger.info("Key: " + key + ", Tag: " + value));
     }
 }
