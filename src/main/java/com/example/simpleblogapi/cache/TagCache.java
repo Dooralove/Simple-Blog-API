@@ -3,17 +3,24 @@ package com.example.simpleblogapi.cache;
 import com.example.simpleblogapi.entities.Tag;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TagCache {
 
     private static final int MAX_CACHE_SIZE = 100;
+    private static final Logger logger = Logger.getLogger(TagCache.class.getName());
+
 
     private final Map<Long, Tag> tagEntityCache = new LinkedHashMap<>(MAX_CACHE_SIZE, 0.75f, true) {
         @Override
         protected boolean removeEldestEntry(Map.Entry<Long, Tag> eldest) {
-            return size() > MAX_CACHE_SIZE;
+            boolean remove = size() > MAX_CACHE_SIZE;
+            if (remove) {
+                logger.info("Removed eldest entry: " + eldest.getKey() + " from cache.");
+            }
+            return remove;
         }
     };
 
@@ -35,5 +42,14 @@ public class TagCache {
 
     public void clear() {
         tagEntityCache.clear();
+    }
+
+    public int size() {
+        return tagEntityCache.size();
+    }
+
+    public void printCache() {
+        tagEntityCache.forEach((key, value) ->
+                System.out.println("Key: " + key + ", Tag: " + value));
     }
 }
