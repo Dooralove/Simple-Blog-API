@@ -17,7 +17,7 @@ public class TagCache {
 
         @Override
         protected boolean removeEldestEntry(Map.Entry<Long, Tag> eldest) {
-            boolean remove = super.size() > MAX_CACHE_SIZE;  
+            boolean remove = super.size() > MAX_CACHE_SIZE;
             if (remove) {
                 logger.info("Removed eldest entry: " + eldest.getKey() + " from cache.");
             }
@@ -50,7 +50,6 @@ public class TagCache {
     }
 
     public void printCache() {
-        // Заменим System.out.println() на логирование
         tagEntityCache.forEach((key, value) ->
                 logger.info("Key: " + key + ", Tag: " + value));
     }
