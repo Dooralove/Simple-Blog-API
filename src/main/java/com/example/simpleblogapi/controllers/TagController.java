@@ -31,21 +31,24 @@ public class TagController {
 
     @Operation(summary = "Создание тега", description = "Создает новый тег")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Тег успешно создан"),
-            @ApiResponse(responseCode = "400", description = "Неверные входные данные", content = @Content)
+        @ApiResponse(responseCode = "200", description = "Тег успешно создан"),
+        @ApiResponse(responseCode = "400", description =
+                "Неверные входные данные", content = @Content)
     })
     @PostMapping("/create")
     public Tag createTag(@RequestBody Tag tag) {
         return tagService.createTag(tag);
     }
 
-    @Operation(summary = "Получение тега по ID", description = "Возвращает тег по его идентификатору")
+    @Operation(summary = "Получение тега по ID", description =
+            "Возвращает тег по его идентификатору")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Тег найден"),
-            @ApiResponse(responseCode = "404", description = "Тег не найден", content = @Content)
+        @ApiResponse(responseCode = "200", description = "Тег найден"),
+        @ApiResponse(responseCode = "404", description = "Тег не найден", content = @Content)
     })
     @GetMapping("/{id}")
-    public Tag getTagById(@Parameter(in = ParameterIn.PATH, description = "Идентификатор тега", required = true)
+    public Tag getTagById(@Parameter(in = ParameterIn.PATH, description =
+            "Идентификатор тега", required = true)
                           @PathVariable Long id) {
         return tagService.getTagById(id);
     }
@@ -61,32 +64,37 @@ public class TagController {
 
     @Operation(summary = "Удаление тега", description = "Удаляет тег по его идентификатору")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Тег успешно удалён"),
-            @ApiResponse(responseCode = "404", description = "Тег не найден", content = @Content)
+        @ApiResponse(responseCode = "200", description = "Тег успешно удалён"),
+        @ApiResponse(responseCode = "404", description = "Тег не найден", content = @Content)
     })
     @DeleteMapping("/{id}")
-    public void deleteTag(@Parameter(in = ParameterIn.PATH, description = "Идентификатор тега", required = true)
+    public void deleteTag(@Parameter(in = ParameterIn.PATH, description =
+            "Идентификатор тега", required = true)
                           @PathVariable Long id) {
         tagService.deleteTag(id);
     }
 
-    @Operation(summary = "Обновление тега", description = "Обновляет данные тега по его идентификатору")
+    @Operation(summary = "Обновление тега", description =
+            "Обновляет данные тега по его идентификатору")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Тег успешно обновлён"),
-            @ApiResponse(responseCode = "404", description = "Тег не найден", content = @Content)
+        @ApiResponse(responseCode = "200", description = "Тег успешно обновлён"),
+        @ApiResponse(responseCode = "404", description = "Тег не найден", content = @Content)
     })
     @PutMapping("/{id}")
-    public Tag updateTag(@Parameter(in = ParameterIn.PATH, description = "Идентификатор тега", required = true)
+    public Tag updateTag(@Parameter(in = ParameterIn.PATH, description =
+            "Идентификатор тега", required = true)
                          @PathVariable Long id, @RequestBody Tag tag) {
         return tagService.updateTag(id, tag);
     }
 
-    @Operation(summary = "Поиск тегов", description = "Возвращает список тегов, имя которых содержит указанную подстроку")
+    @Operation(summary = "Поиск тегов", description =
+            "Возвращает список тегов, имя которых содержит указанную подстроку")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Список тегов успешно получен")
+        @ApiResponse(responseCode = "200", description = "Список тегов успешно получен")
     })
     @GetMapping("/search")
-    public List<Tag> searchTags(@Parameter(in = ParameterIn.QUERY, description = "Часть имени тега для поиска", required = true)
+    public List<Tag> searchTags(@Parameter(in = ParameterIn.QUERY, description =
+            "Часть имени тега для поиска", required = true)
                                 @RequestParam String name) {
         return tagService.searchTagsByName(name);
     }

@@ -24,22 +24,29 @@ import org.springframework.web.bind.annotation.RestController;
 public class LogController {
 
     private static final String LOG_DIRECTORY_PATH = "logs"; // Путь к папке с логами
-    private static final String LOG_FILE_PATH = LOG_DIRECTORY_PATH + "/app.log"; // Путь к общему лог-файлу
+    private static final String LOG_FILE_PATH =
+            LOG_DIRECTORY_PATH + "/app.log"; // Путь к общему лог-файлу
 
     @Operation(
             summary = "Генерация лог-файла за указанную дату",
-            description = "Возвращает лог-файл, содержащий строки из общего лог-файла, начинающиеся с указанной даты в формате yyyy-MM-dd. "
-                    + "При неверном формате даты или отсутствии логов возвращается соответствующая ошибка."
+            description = "Возвращает лог-файл, содержащий строки из общего лог-файла,"
+                    + " начинающиеся с указанной даты в формате yyyy-MM-dd. "
+                    + "При неверном формате даты или отсутствии логов возвращается"
+                    + " соответствующая ошибка."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Лог-файл успешно сгенерирован"),
-            @ApiResponse(responseCode = "400", description = "Неверный формат даты", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Лог-файл не найден или логи за указанную дату отсутствуют", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Ошибка создания директории для логов", content = @Content)
+        @ApiResponse(responseCode = "200", description = "Лог-файл успешно сгенерирован"),
+        @ApiResponse(responseCode = "400", description =
+                "Неверный формат даты", content = @Content),
+        @ApiResponse(responseCode = "404", description =
+                "Лог-файл не найден или логи за указанную дату отсутствуют", content = @Content),
+        @ApiResponse(responseCode = "500", description =
+                "Ошибка создания директории для логов", content = @Content)
     })
     @GetMapping("/logs/file")
     public ResponseEntity<String> generateLogFile(
-            @Parameter(in = ParameterIn.QUERY, description = "Дата для фильтрации логов в формате yyyy-MM-dd", required = true)
+            @Parameter(in = ParameterIn.QUERY, description =
+                    "Дата для фильтрации логов в формате yyyy-MM-dd", required = true)
             @RequestParam String date) throws IOException {
 
         // Проверка валидности формата даты

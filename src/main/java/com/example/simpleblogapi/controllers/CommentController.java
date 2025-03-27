@@ -28,10 +28,12 @@ public class CommentController {
     }
 
     @Operation(summary = "Получение комментариев статьи",
-            description = "Возвращает список комментариев для указанной статьи по идентификатору статьи.")
+            description = "Возвращает список комментариев для указанной"
+                    + " статьи по идентификатору статьи.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Комментарии успешно получены"),
-            @ApiResponse(responseCode = "404", description = "Комментарии не найдены", content = @Content)
+        @ApiResponse(responseCode = "200", description = "Комментарии успешно получены"),
+        @ApiResponse(responseCode = "404", description =
+                "Комментарии не найдены", content = @Content)
     })
     @GetMapping("/by-article/{articleId}")
     public List<Comment> getCommentsByArticle(
@@ -43,8 +45,9 @@ public class CommentController {
     @Operation(summary = "Очистка кэша комментариев для статьи",
             description = "Очищает кэш комментариев для статьи по её идентификатору.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Кэш успешно очищен"),
-            @ApiResponse(responseCode = "404", description = "Статья не найдена", content = @Content)
+        @ApiResponse(responseCode = "200", description = "Кэш успешно очищен"),
+        @ApiResponse(responseCode = "404", description =
+                    "Статья не найдена", content = @Content)
     })
     @DeleteMapping("/clear-cache/{articleId}")
     public void clearCache(
@@ -56,7 +59,7 @@ public class CommentController {
     @Operation(summary = "Очистка всего кэша комментариев",
             description = "Очищает весь кэш комментариев для всех статей.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Весь кэш успешно очищен")
+        @ApiResponse(responseCode = "200", description = "Весь кэш успешно очищен")
     })
     @DeleteMapping("/clear-cache-all")
     public void clearAllCache() {
@@ -66,12 +69,14 @@ public class CommentController {
     @Operation(summary = "Создание комментария",
             description = "Создает новый комментарий и сохраняет его в базе данных.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Комментарий успешно создан"),
-            @ApiResponse(responseCode = "400", description = "Неверные входные данные", content = @Content)
+        @ApiResponse(responseCode = "200", description = "Комментарий успешно создан"),
+        @ApiResponse(responseCode = "400", description =
+                    "Неверные входные данные", content = @Content)
     })
     @PostMapping("/create")
     public Comment createComment(
-            @Parameter(in = ParameterIn.DEFAULT, description = "Объект комментария для создания", required = true)
+            @Parameter(in = ParameterIn.DEFAULT, description =
+                    "Объект комментария для создания", required = true)
             @RequestBody Comment commentEntity) {
         return commentService.createComment(commentEntity);
     }
