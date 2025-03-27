@@ -38,7 +38,7 @@ public class LogController {
             @ApiResponse(responseCode = "500", description = "Ошибка создания директории для логов", content = @Content)
     })
     @GetMapping("/logs/file")
-    public ResponseEntity<?> generateLogFile(
+    public ResponseEntity<String> generateLogFile(
             @Parameter(in = ParameterIn.QUERY, description = "Дата для фильтрации логов в формате yyyy-MM-dd", required = true)
             @RequestParam String date) throws IOException {
 
@@ -65,7 +65,7 @@ public class LogController {
         // Фильтрация строк, содержащих указанную дату
         List<String> filteredLogs = logLines.stream()
                 .filter(line -> line.startsWith(date))
-                .collect(Collectors.toList());
+                .toList();
 
         if (filteredLogs.isEmpty()) {
             return ResponseEntity.status(404).body("No logs found for the specified date.");

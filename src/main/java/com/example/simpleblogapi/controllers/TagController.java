@@ -52,7 +52,7 @@ public class TagController {
 
     @Operation(summary = "Получение всех тегов", description = "Возвращает список всех тегов")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Список тегов успешно получен")
+        @ApiResponse(responseCode = "200", description = "Список тегов успешно получен")
     })
     @GetMapping("/all")
     public List<Tag> getAllTags() {
