@@ -21,14 +21,13 @@ public class LoggingAspect {
     }
 
     @After("execution(* com.example.simpleblogapi.controllers.*.*(..))")
-    public void logAfter(JoinPoint joinPoint) {
-        logger.info("Method execution completed: {}", joinPoint.getSignature().toShortString());
+    public void logAfter() {
+        logger.info("Method execution completed.");
     }
 
-    @AfterThrowing(
-            value = "execution(* com.example.simpleblogapi.controllers.*.*(..))",
+    @AfterThrowing(value = "execution(* com.example.simpleblogapi.controllers.*.*(..))",
             throwing = "exception")
-    public void logAfterThrowing(JoinPoint joinPoint, Exception exception) {
-        logger.error("An error occurred in method {}: {}", joinPoint.getSignature().toShortString(), exception.getMessage(), exception);
+    public void logAfterThrowing(Exception exception) {
+        logger.error("An error occurred: {}", exception.getMessage(), exception);
     }
 }
