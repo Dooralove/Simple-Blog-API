@@ -13,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,62 +22,62 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LogController {
 
-    private static final String LOG_DIRECTORY_PATH = "logs"; // Путь к папке с логами
-    private static final String LOG_FILE_PATH =
-            LOG_DIRECTORY_PATH + "/app.log"; // Путь к общему лог-файлу
+    private static final String LOG_DIRECTORY_PATH = "logs";
+    private static final String LOG_FILE_PATH = LOG_DIRECTORY_PATH + "/app.log";
 
     @Operation(
             summary = "Генерация лог-файла за указанную дату",
-            description = "Возвращает лог-файл, содержащий строки из общего лог-файла,"
-                    + " начинающиеся с указанной даты в формате yyyy-MM-dd. "
-                    + "При неверном формате даты или отсутствии логов возвращается"
-                    + " соответствующая ошибка."
+            description = "Возвращает лог-файл, содержащий только те строки общего лог-файла,"
+                    + " которые начинаются с указанной даты. "
+                    + "Дата должна быть передана в формате yyyy-MM-dd."
+                    + " Если формат даты неверен, основной лог-файл отсутствует "
+                    + "или за заданную дату логи не найдены,"
+                    + " возвращаются соответствующие сообщения об ошибке."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Лог-файл успешно сгенерирован"),
+        @ApiResponse(responseCode = "200", description =
+                "Лог-файл успешно сгенерирован и готов для загрузки"),
         @ApiResponse(responseCode = "400", description =
-                "Неверный формат даты", content = @Content),
+                "Неверный формат даты. Ожидается формат yyyy-MM-dd", content = @Content),
         @ApiResponse(responseCode = "404", description =
-                "Лог-файл не найден или логи за указанную дату отсутствуют", content = @Content),
+                "Основной лог-файл не найден или логи"
+                        + " за указанную дату отсутствуют", content = @Content),
         @ApiResponse(responseCode = "500", description =
-                "Ошибка создания директории для логов", content = @Content)
+                "Ошибка создания директории для логов"
+                        + " или работы с файловой системой", content = @Content)
     })
     @GetMapping("/logs/file")
     public ResponseEntity<String> generateLogFile(
-            @Parameter(in = ParameterIn.QUERY, description =
-                    "Дата для фильтрации логов в формате yyyy-MM-dd", required = true)
-            @RequestParam String date) throws IOException {
+            @Parameter(
+                    in = ParameterIn.QUERY,
+                    description = "Дата для фильтрации логов (формат yyyy-MM-dd)",
+                    required = true
+            ) @RequestParam String date) throws IOException {
 
-        // Проверка валидности формата даты
         if (!isValidDate(date)) {
-            return ResponseEntity.badRequest().body("Invalid date format.");
+            return ResponseEntity.badRequest().body("Неверный формат даты.");
         }
 
-        // Проверка существования директории с логами
         File logDirectory = new File(LOG_DIRECTORY_PATH);
         if (!logDirectory.exists() && !logDirectory.mkdirs()) {
-            return ResponseEntity.status(500).body("Failed to create log directory.");
+            return ResponseEntity.status(500).body("Не удалось создать директорию для логов.");
         }
 
-        // Проверка существования общего лог-файла
         File logFile = new File(LOG_FILE_PATH);
         if (!logFile.exists()) {
-            return ResponseEntity.status(404).body("Main log file not found.");
+            return ResponseEntity.status(404).body("Основной лог-файл не найден.");
         }
 
-        // Чтение строк из общего лог-файла
         List<String> logLines = Files.readAllLines(Paths.get(LOG_FILE_PATH));
 
-        // Фильтрация строк, содержащих указанную дату
         List<String> filteredLogs = logLines.stream()
                 .filter(line -> line.startsWith(date))
                 .toList();
 
         if (filteredLogs.isEmpty()) {
-            return ResponseEntity.status(404).body("No logs found for the specified date.");
+            return ResponseEntity.status(404).body("Логи за указанную дату не найдены.");
         }
 
-        // Создание файла с логами за указанную дату
         String dailyLogFilePath = LOG_DIRECTORY_PATH + "/daily-log-" + date + ".log";
         File dailyLogFile = new File(dailyLogFilePath);
         try (FileWriter writer = new FileWriter(dailyLogFile)) {
@@ -87,7 +86,6 @@ public class LogController {
             }
         }
 
-        // Возвращаем созданный файл в ответе
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=daily-log-" + date + ".log");
 
@@ -96,9 +94,8 @@ public class LogController {
                 .body(Files.readString(Paths.get(dailyLogFilePath)));
     }
 
-    // Проверка формата даты
     private boolean isValidDate(String date) {
-        String regex = "^\\d{4}-\\d{2}-\\d{2}$"; // Формат: yyyy-MM-dd
+        String regex = "^\\d{4}-\\d{2}-\\d{2}$";
         Pattern pattern = Pattern.compile(regex);
         return pattern.matcher(date).matches();
     }

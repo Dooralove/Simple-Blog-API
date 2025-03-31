@@ -27,56 +27,89 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @Operation(summary = "Получение комментариев статьи",
-            description = "Возвращает список комментариев для указанной"
-                    + " статьи по идентификатору статьи.")
+    @Operation(
+            summary = "Получение комментариев к статье",
+            description = "Возвращает список всех комментариев, оставленных к статье, "
+                    + "идентифицированной по её уникальному идентификатору. "
+                    + "Этот endpoint используется для отображения отзывов или обсуждений, "
+                    + "связанных с конкретной статьёй."
+    )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Комментарии успешно получены"),
         @ApiResponse(responseCode = "404", description =
-                "Комментарии не найдены", content = @Content)
+                "Комментарии не найдены для данной статьи", content = @Content)
     })
     @GetMapping("/by-article/{articleId}")
     public List<Comment> getCommentsByArticle(
-            @Parameter(in = ParameterIn.PATH, description = "Идентификатор статьи", required = true)
+            @Parameter(
+                    in = ParameterIn.PATH,
+                    description = "Уникальный идентификатор статьи,"
+                            + " для которой необходимо получить комментарии",
+                    required = true
+            )
             @PathVariable Long articleId) {
         return commentService.getCommentsByArticle(articleId);
     }
 
-    @Operation(summary = "Очистка кэша комментариев для статьи",
-            description = "Очищает кэш комментариев для статьи по её идентификатору.")
+    @Operation(
+            summary = "Очистка кэша комментариев для статьи",
+            description = "Очищает кэш комментариев, связанных с конкретной статьёй, "
+                    + "идентифицированной по её уникальному идентификатору. "
+                    + "Эта операция позволяет обновить данные,"
+                    + " если произошли изменения в комментариях."
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Кэш успешно очищен"),
+        @ApiResponse(responseCode = "200", description = "Кэш комментариев успешно очищен"),
         @ApiResponse(responseCode = "404", description =
-                    "Статья не найдена", content = @Content)
+                "Статья с указанным идентификатором не найдена", content = @Content)
     })
     @DeleteMapping("/clear-cache/{articleId}")
     public void clearCache(
-            @Parameter(in = ParameterIn.PATH, description = "Идентификатор статьи", required = true)
+            @Parameter(
+                    in = ParameterIn.PATH,
+                    description = "Уникальный идентификатор статьи,"
+                            + " для которой требуется очистка кэша комментариев",
+                    required = true
+            )
             @PathVariable Long articleId) {
         commentService.clearCache(articleId);
     }
 
-    @Operation(summary = "Очистка всего кэша комментариев",
-            description = "Очищает весь кэш комментариев для всех статей.")
+    @Operation(
+            summary = "Очистка кэша всех комментариев",
+            description = "Полностью очищает кэш всех комментариев для всех статей. "
+                    + "Данный endpoint применяется для сброса кэшированных данных, "
+                    + "что позволяет загрузить актуальную информацию из базы данных."
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Весь кэш успешно очищен")
+        @ApiResponse(responseCode = "200", description = "Кэш всех комментариев успешно очищен")
     })
     @DeleteMapping("/clear-cache-all")
     public void clearAllCache() {
         commentService.clearAllCache();
     }
 
-    @Operation(summary = "Создание комментария",
-            description = "Создает новый комментарий и сохраняет его в базе данных.")
+    @Operation(
+            summary = "Создание нового комментария",
+            description = "Создает и сохраняет новый комментарий в базе данных. "
+                    + "Для успешного создания необходимо передать"
+                    + " корректно заполненный объект комментария, "
+                    + "содержащий все обязательные поля,"
+                    + " такие как текст комментария, идентификатор статьи и пользователя."
+    )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Комментарий успешно создан"),
         @ApiResponse(responseCode = "400", description =
-                    "Неверные входные данные", content = @Content)
+                "Неверные входные данные для создания комментария", content = @Content)
     })
     @PostMapping("/create")
     public Comment createComment(
-            @Parameter(in = ParameterIn.DEFAULT, description =
-                    "Объект комментария для создания", required = true)
+            @Parameter(
+                    in = ParameterIn.DEFAULT,
+                    description = "Объект комментария с данными для создания."
+                            + " Должен включать все необходимые атрибуты.",
+                    required = true
+            )
             @RequestBody Comment commentEntity) {
         return commentService.createComment(commentEntity);
     }
