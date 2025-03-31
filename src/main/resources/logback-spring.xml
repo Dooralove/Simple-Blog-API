@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <!-- Отключаем CONDITIONS EVALUATION REPORT -->
     <logger name="org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener" level="OFF"/>
 
-    <!-- Консольный логгер -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <!-- Файловый логгер (автоочистка после 10MB) -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/app.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
@@ -36,7 +33,7 @@
     </root>
 
     <!-- Отдельные уровни логирования -->
-    <logger name="org.springframework" level="DEBUG"/>
-    <logger name="com.example" level="DEBUG"/>
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="com.example" level="INFO"/>
 
 </configuration>

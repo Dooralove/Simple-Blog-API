@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -110,7 +111,7 @@ public class CommentController {
                             + " Должен включать все необходимые атрибуты.",
                     required = true
             )
-            @RequestBody Comment commentEntity) {
+            @Valid @RequestBody Comment commentEntity) {
         return commentService.createComment(commentEntity);
     }
 }

@@ -34,8 +34,12 @@ public class ArticleService {
     }
 
     public void deleteArticle(Long id) {
+        if (!articleRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Статья с id " + id + " не найдена");
+        }
         articleRepository.deleteById(id);
     }
+
 
     public List<Article> getArticlesByTagName(String tagName) {
         return articleRepository.findArticlesByTagName(tagName);

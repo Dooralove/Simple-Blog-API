@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,7 +43,7 @@ public class ArticleController {
                 "Ошибка валидации данных", content = @Content)
     })
     @PostMapping("/create")
-    public Article createArticle(@RequestBody Article article) {
+    public Article createArticle(@Valid @RequestBody Article article) {
         article.setCreatedAt(LocalDateTime.now());
         return articleService.createArticle(article);
     }

@@ -13,6 +13,8 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+
 
 @Entity
 @Table(name = "articles")
@@ -37,9 +40,12 @@ public class Article {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Поле title не может быть пустым")
     private String title;
 
     @Column(nullable = false, length = 5000)
+    @NotBlank(message = "Поле content не может быть пустым")
+    @Size(max = 5000, message = "Длина content не должна превышать 5000 символов")
     private String content;
 
     @CreationTimestamp

@@ -9,12 +9,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Entity
 @Table(name = "tags")
@@ -30,6 +32,7 @@ public class Tag {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "Поле name не может быть пустым")
     private String name;
 
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)

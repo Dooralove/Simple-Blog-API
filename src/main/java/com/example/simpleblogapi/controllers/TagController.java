@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +42,7 @@ public class TagController {
                 "Неверные входные данные", content = @Content)
     })
     @PostMapping("/create")
-    public Tag createTag(@RequestBody Tag tag) {
+    public Tag createTag(@Valid @RequestBody Tag tag) {
         return tagService.createTag(tag);
     }
 

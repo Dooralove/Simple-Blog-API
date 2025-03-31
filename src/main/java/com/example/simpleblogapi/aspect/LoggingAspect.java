@@ -2,6 +2,7 @@ package com.example.simpleblogapi.aspect;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,8 +16,8 @@ public class LoggingAspect {
     private static final Logger logger = LogManager.getLogger(LoggingAspect.class);
 
     @Before("execution(* com.example.simpleblogapi.controllers.*.*(..))")
-    public void logBefore() {
-        logger.info("Method execution started.");
+    public void logBefore(JoinPoint joinPoint) {
+        logger.info("Executing method: {}", joinPoint.getSignature().toShortString());
     }
 
     @After("execution(* com.example.simpleblogapi.controllers.*.*(..))")
