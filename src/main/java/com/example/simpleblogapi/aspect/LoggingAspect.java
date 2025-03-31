@@ -17,8 +17,11 @@ public class LoggingAspect {
 
     @Before("execution(* com.example.simpleblogapi.controllers.*.*(..))")
     public void logBefore(JoinPoint joinPoint) {
-        logger.info("Executing method: {}", joinPoint.getSignature().toShortString());
+        if (logger.isInfoEnabled()) {
+            logger.info("Executing method: {}", joinPoint.getSignature().toShortString());
+        }
     }
+
 
     @After("execution(* com.example.simpleblogapi.controllers.*.*(..))")
     public void logAfter() {
