@@ -33,14 +33,13 @@ public class ArticleController {
 
     @Operation(
             summary = "Создание новой статьи",
-            description = "Создает новую статью и автоматически"
-                    + " устанавливает текущую дату создания. "
-                    + "Используйте этот эндпоинт для добавления нового контента в блог."
+            description = "Создает новую статью и автоматически устанавливает текущую дату"
+                    + " создания. Используйте этот эндпоинт для добавления нового контента в блог."
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Статья успешно создана"),
-        @ApiResponse(responseCode = "400", description =
-                "Ошибка валидации данных", content = @Content)
+        @ApiResponse(responseCode = "400", description = "Ошибка валидации данных",
+                content = @Content)
     })
     @PostMapping("/create")
     public Article createArticle(@Valid @RequestBody Article article) {
@@ -49,9 +48,25 @@ public class ArticleController {
     }
 
     @Operation(
+            summary = "Массовое создание статей",
+            description = "Создает несколько статей за один запрос."
+                    + " Используйте этот эндпоинт для добавления нескольких статей одновременно."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Статьи успешно созданы"),
+        @ApiResponse(responseCode = "400", description = "Ошибка валидации данных",
+                content = @Content)
+    })
+
+    @PostMapping("/bulk-create")
+    public List<Article> bulkCreateArticles(@Valid @RequestBody List<Article> articles) {
+        return articleService.bulkCreateArticles(articles);
+    }
+
+    @Operation(
             summary = "Получение статьи по ID",
-            description = "Возвращает статью, найденную по уникальному идентификатору. "
-                    + "Используйте этот эндпоинт для получения детальной информации о статье."
+            description = "Возвращает статью, найденную по уникальному идентификатору."
+                    + " Используйте этот эндпоинт для получения детальной информации о статье."
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Статья успешно найдена"),
@@ -69,8 +84,8 @@ public class ArticleController {
 
     @Operation(
             summary = "Получение всех статей",
-            description = "Возвращает список всех статей, доступных в системе. "
-                    + "Этот эндпоинт полезен для отображения всего контента блога."
+            description = "Возвращает список всех статей, доступных в системе."
+                    + " Этот эндпоинт полезен для отображения всего контента блога."
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Список статей успешно получен")
@@ -82,15 +97,14 @@ public class ArticleController {
 
     @Operation(
             summary = "Получение статей по тегу",
-            description = "Возвращает список статей, содержащих указанный тег. "
-                    + "Эндпоинт принимает имя тега через query-параметр и осуществляет"
-                    + " поиск статей по этому критерию."
+            description = "Возвращает список статей, содержащих указанный тег."
+                    + " Эндпоинт принимает имя тега через query-параметр и "
+                    + "осуществляет поиск статей по этому критерию."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description =
-                "Статьи успешно получены"),
-        @ApiResponse(responseCode = "404", description =
-                "Статьи с указанным тегом не найдены", content = @Content)
+        @ApiResponse(responseCode = "200", description = "Статьи успешно получены"),
+        @ApiResponse(responseCode = "404", description = "Статьи с указанным тегом не найдены",
+                content = @Content)
     })
     @GetMapping("/by-tag")
     public List<Article> getArticlesByTagName(
@@ -104,8 +118,8 @@ public class ArticleController {
 
     @Operation(
             summary = "Удаление статьи",
-            description = "Удаляет статью из системы по её уникальному идентификатору. "
-                    + "Используйте этот эндпоинт для удаления ненужного или устаревшего контента."
+            description = "Удаляет статью из системы по её уникальному идентификатору."
+                    + " Используйте этот эндпоинт для удаления ненужного или устаревшего контента."
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Статья успешно удалена"),
@@ -123,14 +137,14 @@ public class ArticleController {
 
     @Operation(
             summary = "Добавление тега к статье",
-            description = "Добавляет тег к статье, используя уникальные"
-                    + " идентификаторы статьи и тега. "
-                    + "Эта операция упрощает классификацию и поиск контента."
+            description = "Добавляет тег к статье, используя уникальные идентификаторы "
+                    + "статьи и тега."
+                    + " Эта операция упрощает классификацию и поиск контента."
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Тег успешно добавлен к статье"),
-        @ApiResponse(responseCode = "404", description =
-                "Статья или тег не найдены", content = @Content)
+        @ApiResponse(responseCode = "404", description = "Статья или тег не найдены",
+                content = @Content)
     })
     @PutMapping("/{articleId}/tags/{tagId}")
     public Article addTagToArticle(
@@ -149,14 +163,14 @@ public class ArticleController {
 
     @Operation(
             summary = "Удаление тега из статьи",
-            description =
-                    "Удаляет связь между статьёй и тегом, используя их уникальные идентификаторы. "
-                    + "Применяйте данный эндпоинт для удаления некорректных или устаревших меток."
+            description = "Удаляет связь между статьёй и тегом, используя"
+                    + " их уникальные идентификаторы."
+                    + " Применяйте данный эндпоинт для удаления некорректных или устаревших меток."
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Тег успешно удалён из статьи"),
-        @ApiResponse(responseCode = "404", description =
-                "Статья или тег не найдены", content = @Content)
+        @ApiResponse(responseCode = "404", description = "Статья или тег не найдены",
+                content = @Content)
     })
     @DeleteMapping("/{articleId}/tags/{tagId}")
     public Article removeTagFromArticle(
@@ -175,13 +189,14 @@ public class ArticleController {
 
     @Operation(
             summary = "Добавление лайка к статье",
-            description = "Увеличивает количество лайков статьи,"
-                    + " используя её уникальный идентификатор. "
-                    + "Эта операция позволяет пользователям выразить своё одобрение контента."
+            description = "Увеличивает количество лайков статьи, используя её"
+                    + " уникальный идентификатор."
+                    + " Эта операция позволяет пользователям выразить своё одобрение контента."
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Лайк успешно добавлен"),
-        @ApiResponse(responseCode = "404", description = "Статья не найдена", content = @Content)
+        @ApiResponse(responseCode = "404", description = "Статья не найдена",
+                content = @Content)
     })
     @PostMapping("/{id}/like")
     public Article likeArticle(
@@ -196,12 +211,13 @@ public class ArticleController {
     @Operation(
             summary = "Добавление дизлайка к статье",
             description = "Увеличивает количество дизлайков статьи,"
-                    + " используя её уникальный идентификатор. "
-                    + "Этот эндпоинт позволяет пользователям выразить несогласие с контентом."
+                    + " используя её уникальный идентификатор."
+                    + " Этот эндпоинт позволяет пользователям выразить несогласие с контентом."
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Дизлайк успешно добавлен"),
-        @ApiResponse(responseCode = "404", description = "Статья не найдена", content = @Content)
+        @ApiResponse(responseCode = "404", description = "Статья не найдена",
+                content = @Content)
     })
     @PostMapping("/{id}/dislike")
     public Article dislikeArticle(
@@ -216,13 +232,14 @@ public class ArticleController {
     @Operation(
             summary = "Удаление лайка",
             description = "Удаляет ранее добавленный лайк у статьи,"
-                    + " используя её уникальный идентификатор. "
-                    + "Используйте этот эндпоинт для корректировки"
+                    + " используя её уникальный идентификатор."
+                    + " Используйте этот эндпоинт для корректировки"
                     + " количества лайков в случае ошибки."
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Лайк успешно удалён"),
-        @ApiResponse(responseCode = "404", description = "Статья не найдена", content = @Content)
+        @ApiResponse(responseCode = "404", description = "Статья не найдена",
+                content = @Content)
     })
     @DeleteMapping("/{id}/like")
     public Article removeLike(
@@ -237,12 +254,13 @@ public class ArticleController {
     @Operation(
             summary = "Удаление дизлайка",
             description = "Удаляет ранее добавленный дизлайк у статьи,"
-                    + " используя её уникальный идентификатор. "
-                    + "Данный эндпоинт позволяет скорректировать рейтинг статьи."
+                    + " используя её уникальный идентификатор."
+                    + " Данный эндпоинт позволяет скорректировать рейтинг статьи."
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Дизлайк успешно удалён"),
-        @ApiResponse(responseCode = "404", description = "Статья не найдена", content = @Content)
+        @ApiResponse(responseCode = "404", description = "Статья не найдена",
+                content = @Content)
     })
     @DeleteMapping("/{id}/dislike")
     public Article removeDislike(

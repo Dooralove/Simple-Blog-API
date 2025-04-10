@@ -5,8 +5,10 @@ import com.example.simpleblogapi.entities.Tag;
 import com.example.simpleblogapi.exceptions.ResourceNotFoundException;
 import com.example.simpleblogapi.repositories.ArticleRepository;
 import com.example.simpleblogapi.repositories.TagRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,9 +26,20 @@ public class ArticleService {
         return articleRepository.findAll();
     }
 
+
+
     public Article getArticleById(Long id) {
         return articleRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Article not found"));
+    }
+
+    public List<Article> bulkCreateArticles(List<Article> articles) {
+        return articles.stream()
+                .map(article -> {
+                    article.setCreatedAt(LocalDateTime.now());
+                    return createArticle(article);
+                })
+                .collect(Collectors.toList());
     }
 
     public Article createArticle(Article article) {
@@ -101,3 +114,4 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 }
+

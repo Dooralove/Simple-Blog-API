@@ -50,7 +50,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    // Новый обработчик для ошибок преобразования типа
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiErrorResponse>
         handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
@@ -69,7 +68,6 @@ public class GlobalExceptionHandler {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
-        // Если требуется обработать другие случаи преобразования
         ApiErrorResponse response = new ApiErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
