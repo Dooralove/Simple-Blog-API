@@ -30,7 +30,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void testGetCommentsByArticle_FromCache() {
+    void testGetCommentsByArticle_FromCache() {
         Long articleId = 1L;
         List<Comment> comments = Arrays.asList(new Comment(), new Comment());
         // First call to populate cache
@@ -45,7 +45,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void testGetCommentsByArticle_FromRepository() {
+    void testGetCommentsByArticle_FromRepository() {
         Long articleId = 1L;
         List<Comment> comments = Arrays.asList(new Comment(), new Comment());
         when(commentRepository.findCommentsByArticleId(articleId)).thenReturn(comments);
@@ -58,7 +58,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void testGetCommentsByArticle_EmptyList() {
+    void testGetCommentsByArticle_EmptyList() {
         Long articleId = 1L;
         when(commentRepository.findCommentsByArticleId(articleId)).thenReturn(Arrays.asList());
         List<Comment> result = commentService.getCommentsByArticle(articleId);
@@ -70,7 +70,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void testClearCache() {
+    void testClearCache() {
         Long articleId = 1L;
         List<Comment> comments = Arrays.asList(new Comment());
         // Populate cache
@@ -85,7 +85,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void testClearAllCache() {
+    void testClearAllCache() {
         Long articleId1 = 1L;
         Long articleId2 = 2L;
         List<Comment> comments1 = Arrays.asList(new Comment());
@@ -107,7 +107,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void testCreateComment() {
+    void testCreateComment() {
         Comment comment = new Comment();
         when(commentRepository.save(comment)).thenReturn(comment);
         Comment result = commentService.createComment(comment);

@@ -32,12 +32,12 @@ public class TagServiceTest {
     private TagService tagService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testGetAllTags() {
+    void testGetAllTags() {
         List<Tag> tags = Arrays.asList(new Tag(), new Tag());
         when(tagRepository.findAll()).thenReturn(tags);
         List<Tag> result = tagService.getAllTags();
@@ -45,7 +45,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testGetTagById_FromCache() {
+    void testGetTagById_FromCache() {
         Long id = 1L;
         Tag tag = new Tag();
         when(tagCache.contains(id)).thenReturn(true);
@@ -56,7 +56,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testGetTagById_FromRepository() {
+    void testGetTagById_FromRepository() {
         Long id = 1L;
         Tag tag = new Tag();
         when(tagCache.contains(id)).thenReturn(false);
@@ -67,7 +67,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testGetTagById_NotFound() {
+    void testGetTagById_NotFound() {
         Long id = 1L;
         when(tagCache.contains(id)).thenReturn(false);
         when(tagRepository.findById(id)).thenReturn(Optional.empty());
@@ -75,7 +75,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testCreateTag() {
+    void testCreateTag() {
         Tag tag = new Tag();
         when(tagRepository.save(tag)).thenReturn(tag);
         Tag result = tagService.createTag(tag);
@@ -83,7 +83,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testDeleteTag() {
+    void testDeleteTag() {
         Long id = 1L;
         tagService.deleteTag(id);
         verify(tagRepository).deleteById(id);
@@ -91,7 +91,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testGetOrCreateTag_Existing() {
+    void testGetOrCreateTag_Existing() {
         String name = "tech";
         Tag tag = new Tag();
         when(tagRepository.findByName(name)).thenReturn(Optional.of(tag));
@@ -101,7 +101,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testGetOrCreateTag_New() {
+    void testGetOrCreateTag_New() {
         String name = "tech";
         when(tagRepository.findByName(name)).thenReturn(Optional.empty());
         Tag savedTag = new Tag(1L, name, null);
@@ -113,7 +113,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testUpdateTag_Success() {
+    void testUpdateTag_Success() {
         Long id = 1L;
         Tag existingTag = new Tag(id, "old", null);
         when(tagRepository.findById(id)).thenReturn(Optional.of(existingTag));
@@ -126,7 +126,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testUpdateTag_NotFound() {
+    void testUpdateTag_NotFound() {
         Long id = 1L;
         when(tagRepository.findById(id)).thenReturn(Optional.empty());
         Tag updateData = new Tag();
@@ -134,7 +134,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testSearchTagsByName() {
+    void testSearchTagsByName() {
         String name = "tech";
         List<Tag> tags = Arrays.asList(new Tag(), new Tag());
         when(tagRepository.searchTagsByName(name)).thenReturn(tags);

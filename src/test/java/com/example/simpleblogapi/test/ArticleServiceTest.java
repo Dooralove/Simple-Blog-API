@@ -36,13 +36,13 @@ public class ArticleServiceTest {
 
     // Инициализация моков перед каждым тестом
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     // Тест для метода getAllArticles
     @Test
-    public void testGetAllArticles() {
+    void testGetAllArticles() {
         List<Article> articles = Arrays.asList(new Article(), new Article());
         when(articleRepository.findAll()).thenReturn(articles);
         List<Article> result = articleService.getAllArticles();
@@ -51,7 +51,7 @@ public class ArticleServiceTest {
 
     // Тест для метода getArticleById (успешный сценарий)
     @Test
-    public void testGetArticleById_Success() {
+    void testGetArticleById_Success() {
         Article article = new Article();
         when(articleRepository.findById(1L)).thenReturn(Optional.of(article));
         assertEquals(article, articleService.getArticleById(1L));
@@ -59,14 +59,14 @@ public class ArticleServiceTest {
 
     // Тест для метода getArticleById (статья не найдена)
     @Test
-    public void testGetArticleById_NotFound() {
+    void testGetArticleById_NotFound() {
         when(articleRepository.findById(1L)).thenReturn(Optional.empty());
         assertThrows(ResourceNotFoundException.class, () -> articleService.getArticleById(1L));
     }
 
     // Тест для метода bulkCreateArticles
     @Test
-    public void testBulkCreateArticles() {
+    void testBulkCreateArticles() {
         List<Article> articles = Arrays.asList(new Article(), new Article());
         when(articleRepository.save(any(Article.class))).thenAnswer(invocation -> invocation.getArgument(0));
         List<Article> result = articleService.bulkCreateArticles(articles);
@@ -76,7 +76,7 @@ public class ArticleServiceTest {
 
     // Тест для метода createArticle
     @Test
-    public void testCreateArticle() {
+    void testCreateArticle() {
         Article article = new Article();
         when(articleRepository.save(article)).thenReturn(article);
         assertEquals(article, articleService.createArticle(article));
@@ -84,7 +84,7 @@ public class ArticleServiceTest {
 
     // Тест для метода deleteArticle (успешный сценарий)
     @Test
-    public void testDeleteArticle_Success() {
+    void testDeleteArticle_Success() {
         when(articleRepository.existsById(1L)).thenReturn(true);
         articleService.deleteArticle(1L);
         verify(articleRepository, times(1)).deleteById(1L);
@@ -92,14 +92,14 @@ public class ArticleServiceTest {
 
     // Тест для метода deleteArticle (статья не найдена)
     @Test
-    public void testDeleteArticle_NotFound() {
+    void testDeleteArticle_NotFound() {
         when(articleRepository.existsById(1L)).thenReturn(false);
         assertThrows(ResourceNotFoundException.class, () -> articleService.deleteArticle(1L));
     }
 
     // Тест для метода getArticlesByTagName
     @Test
-    public void testGetArticlesByTagName() {
+    void testGetArticlesByTagName() {
         List<Article> articles = Arrays.asList(new Article());
         when(articleRepository.findArticlesByTagName("tech")).thenReturn(articles);
         assertEquals(1, articleService.getArticlesByTagName("tech").size());
@@ -107,7 +107,7 @@ public class ArticleServiceTest {
 
     // Тест для метода addTagToArticle (успешный сценарий)
     @Test
-    public void testAddTagToArticle_Success() {
+    void testAddTagToArticle_Success() {
         Article article = new Article();
         Tag tag = new Tag();
         when(articleRepository.findById(1L)).thenReturn(Optional.of(article));
@@ -119,14 +119,14 @@ public class ArticleServiceTest {
 
     // Тест для метода addTagToArticle (ресурс не найден)
     @Test
-    public void testAddTagToArticle_NotFound() {
+    void testAddTagToArticle_NotFound() {
         when(articleRepository.findById(1L)).thenReturn(Optional.empty());
         assertThrows(ResourceNotFoundException.class, () -> articleService.addTagToArticle(1L, 1L));
     }
 
     // Тест для метода removeTagFromArticle (успешный сценарий)
     @Test
-    public void testRemoveTagFromArticle_Success() {
+    void testRemoveTagFromArticle_Success() {
         Article article = new Article();
         Tag tag = new Tag();
         article.getTags().add(tag);
@@ -139,14 +139,14 @@ public class ArticleServiceTest {
 
     // Тест для метода removeTagFromArticle (ресурс не найден)
     @Test
-    public void testRemoveTagFromArticle_NotFound() {
+    void testRemoveTagFromArticle_NotFound() {
         when(articleRepository.findById(1L)).thenReturn(Optional.empty());
         assertThrows(ResourceNotFoundException.class, () -> articleService.removeTagFromArticle(1L, 1L));
     }
 
     // Тест для метода likeArticle
     @Test
-    public void testLikeArticle() {
+    void testLikeArticle() {
         Article article = new Article();
         article.setLikes(0);
         when(articleRepository.findById(1L)).thenReturn(Optional.of(article));
@@ -157,7 +157,7 @@ public class ArticleServiceTest {
 
     // Тест для метода dislikeArticle
     @Test
-    public void testDislikeArticle() {
+    void testDislikeArticle() {
         Article article = new Article();
         article.setDislikes(0);
         when(articleRepository.findById(1L)).thenReturn(Optional.of(article));
@@ -168,7 +168,7 @@ public class ArticleServiceTest {
 
     // Тест для метода removeLike (успешный сценарий)
     @Test
-    public void testRemoveLike() {
+    void testRemoveLike() {
         Article article = new Article();
         article.setLikes(1);
         when(articleRepository.findById(1L)).thenReturn(Optional.of(article));
@@ -179,7 +179,7 @@ public class ArticleServiceTest {
 
     // Тест для метода removeLike (лайков уже нет)
     @Test
-    public void testRemoveLike_ZeroLikes() {
+    void testRemoveLike_ZeroLikes() {
         Article article = new Article();
         article.setLikes(0);
         when(articleRepository.findById(1L)).thenReturn(Optional.of(article));
@@ -190,7 +190,7 @@ public class ArticleServiceTest {
 
     // Тест для метода removeDislike (успешный сценарий)
     @Test
-    public void testRemoveDislike() {
+    void testRemoveDislike() {
         Article article = new Article();
         article.setDislikes(1);
         when(articleRepository.findById(1L)).thenReturn(Optional.of(article));
@@ -201,7 +201,7 @@ public class ArticleServiceTest {
 
     // Тест для метода removeDislike (дизлайков уже нет)
     @Test
-    public void testRemoveDislike_ZeroDislikes() {
+    void testRemoveDislike_ZeroDislikes() {
         Article article = new Article();
         article.setDislikes(0);
         when(articleRepository.findById(1L)).thenReturn(Optional.of(article));
