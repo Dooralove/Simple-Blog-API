@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class ArticleServiceTest {
+class ArticleServiceTest {
 
     // Моки для зависимостей
     @Mock

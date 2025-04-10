@@ -39,7 +39,7 @@ public class ArticleService {
                     article.setCreatedAt(LocalDateTime.now());
                     return createArticle(article);
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Article createArticle(Article article) {
