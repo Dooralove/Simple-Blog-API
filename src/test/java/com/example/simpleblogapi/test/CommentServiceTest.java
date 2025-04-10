@@ -24,7 +24,7 @@ class CommentServiceTest {
     private CommentService commentService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
         commentService.clearAllCache(); // Ensure cache is clear
     }
