@@ -1,57 +1,84 @@
 package com.example.simpleblogapi.test;
 
+import com.example.simpleblogapi.entities.VisitCount;
+import com.example.simpleblogapi.repositories.VisitCountRepository;
 import com.example.simpleblogapi.service.VisitCounterService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 class VisitCounterServiceTest {
 
+    private VisitCountRepository visitCountRepository;
     private VisitCounterService visitCounterService;
 
     @BeforeEach
     void setUp() {
-        visitCounterService = new VisitCounterService();
+        visitCountRepository = mock(VisitCountRepository.class);
+        visitCounterService = new VisitCounterService(visitCountRepository);
     }
 
     @Test
-    void incrementVisit_FirstTime_ShouldReturnOne() {
-        String url = "/test-page";
+    void incrementVisit_WhenUrlExists_ShouldIncrementCount() {
+        String url = "https://example.com";
+        VisitCount existingVisitCount = new VisitCount();
+        existingVisitCount.setUrl(url);
+        existingVisitCount.setCount(5L);
 
-        long count = visitCounterService.incrementVisit(url);
+        when(visitCountRepository.findByUrl(url)).thenReturn(Optional.of(existingVisitCount));
 
-        assertEquals(1, count, "При первом вызове счетчик должен быть равен 1");
+        long updatedCount = visitCounterService.incrementVisit(url);
+
+        assertEquals(6L, updatedCount);
+        verify(visitCountRepository).save(existingVisitCount);
     }
 
     @Test
-    void incrementVisit_MultipleTimes_ShouldIncrementCorrectly() {
-        String url = "/test-page";
+    void incrementVisit_WhenUrlDoesNotExist_ShouldCreateNewVisitCount() {
+        String url = "https://newsite.com";
 
-        visitCounterService.incrementVisit(url);
-        visitCounterService.incrementVisit(url);
-        long count = visitCounterService.incrementVisit(url);
+        when(visitCountRepository.findByUrl(url)).thenReturn(Optional.empty());
 
-        assertEquals(3, count, "После трёх инкрементов значение должно быть 3");
+        ArgumentCaptor<VisitCount> captor = ArgumentCaptor.forClass(VisitCount.class);
+
+        long updatedCount = visitCounterService.incrementVisit(url);
+
+        assertEquals(1L, updatedCount);
+        verify(visitCountRepository).save(captor.capture());
+
+        VisitCount savedVisitCount = captor.getValue();
+        assertEquals(url, savedVisitCount.getUrl());
+        assertEquals(1L, savedVisitCount.getCount());
     }
 
     @Test
-    void getVisitCount_WhenNoVisits_ShouldReturnZero() {
-        String url = "/non-existent-page";
+    void getVisitCount_WhenUrlExists_ShouldReturnCount() {
+        // given
+        String url = "https://example.com";
+        VisitCount existingVisitCount = new VisitCount();
+        existingVisitCount.setUrl(url);
+        existingVisitCount.setCount(10L);
+
+        when(visitCountRepository.findByUrl(url)).thenReturn(Optional.of(existingVisitCount));
 
         long count = visitCounterService.getVisitCount(url);
 
-        assertEquals(0, count, "Для нового URL количество посещений должно быть 0");
+        assertEquals(10L, count);
     }
 
     @Test
-    void getVisitCount_AfterIncrements_ShouldReturnCorrectCount() {
-        String url = "/test-page";
+    void getVisitCount_WhenUrlDoesNotExist_ShouldReturnZero() {
+        String url = "https://unknown.com";
 
-        visitCounterService.incrementVisit(url);
-        visitCounterService.incrementVisit(url);
+        when(visitCountRepository.findByUrl(url)).thenReturn(Optional.empty());
+
         long count = visitCounterService.getVisitCount(url);
 
-        assertEquals(2, count, "После двух инкрементов значение должно быть 2");
+        assertEquals(0L, count);
     }
 }
