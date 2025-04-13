@@ -9,6 +9,8 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -18,13 +20,14 @@ import org.springframework.stereotype.Service;
 @EnableAsync
 public class AsyncLogFileService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AsyncLogFileService.class);
+
     private static final String LOG_DIRECTORY_PATH = "logs";
     private static final String MAIN_LOG_FILE = LOG_DIRECTORY_PATH + "/app.log";
 
     private final Map<Long, TaskStatus> taskStatusMap = new ConcurrentHashMap<>();
     private final Map<Long, String> taskFileMap = new ConcurrentHashMap<>();
     private final AtomicLong idGenerator = new AtomicLong(1);
-
     private final ApplicationContext applicationContext;
 
     public AsyncLogFileService(ApplicationContext applicationContext) {
@@ -45,9 +48,8 @@ public class AsyncLogFileService {
             if (filteredLogs.isEmpty()) {
                 throw new IOException("Логи за указанную дату не найдены.");
             }
-            
-            String dailyLogFilePath = LOG_DIRECTORY_PATH + "/daily-log-" + taskId + ".log";
 
+            String dailyLogFilePath = LOG_DIRECTORY_PATH + "/daily-log-" + taskId + ".log";
             try (FileWriter writer = new FileWriter(dailyLogFilePath)) {
                 for (String log : filteredLogs) {
                     writer.write(log + System.lineSeparator());
@@ -57,7 +59,8 @@ public class AsyncLogFileService {
             taskStatusMap.put(taskId, TaskStatus.COMPLETED);
         } catch (Exception ex) {
             taskStatusMap.put(taskId, TaskStatus.FAILED);
-            ex.printStackTrace();
+            LOGGER.error("Error generating log file "
+                    + "asynchronously for taskId {}: {}", taskId, ex.getMessage(), ex);
         }
     }
 
@@ -67,7 +70,6 @@ public class AsyncLogFileService {
         proxy.generateLogFileAsync(date, taskId);
         return taskId;
     }
-
 
     public TaskStatus getTaskStatus(Long taskId) {
         return taskStatusMap.get(taskId);
