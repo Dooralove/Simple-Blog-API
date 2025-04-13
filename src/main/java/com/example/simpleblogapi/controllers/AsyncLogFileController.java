@@ -84,7 +84,7 @@ public class AsyncLogFileController {
                 "Файл не найден или задача не завершена", content = @Content)
     })
     @GetMapping("/{taskId}/file")
-    public ResponseEntity<?> getLogFile(
+    public ResponseEntity<Object> getLogFile(
             @Parameter(
                     in = ParameterIn.PATH,
                     description = "Уникальный идентификатор задачи",

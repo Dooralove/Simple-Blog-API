@@ -9,6 +9,8 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
@@ -22,35 +24,31 @@ public class AsyncLogFileService {
 
     private final Map<Long, TaskStatus> taskStatusMap = new ConcurrentHashMap<>();
     private final Map<Long, String> taskFileMap = new ConcurrentHashMap<>();
-
     private final AtomicLong idGenerator = new AtomicLong(1);
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Async
     public void generateLogFileAsync(String date, Long taskId) {
         taskStatusMap.put(taskId, TaskStatus.IN_PROGRESS);
-
         try {
             if (!Files.exists(Paths.get(MAIN_LOG_FILE))) {
                 throw new IOException("Основной лог-файл не найден");
             }
-
             var logLines = Files.readAllLines(Paths.get(MAIN_LOG_FILE));
             var filteredLogs = logLines.stream()
                     .filter(line -> line.startsWith(date))
                     .toList();
-
             if (filteredLogs.isEmpty()) {
                 throw new IOException("Логи за указанную дату не найдены.");
             }
-
             String dailyLogFilePath = LOG_DIRECTORY_PATH + "/daily-log-" + date + ".log";
-
             try (FileWriter writer = new FileWriter(dailyLogFilePath)) {
                 for (String log : filteredLogs) {
                     writer.write(log + System.lineSeparator());
                 }
             }
-
             taskFileMap.put(taskId, dailyLogFilePath);
             taskStatusMap.put(taskId, TaskStatus.COMPLETED);
         } catch (Exception ex) {
@@ -61,7 +59,8 @@ public class AsyncLogFileService {
 
     public Long startLogFileGeneration(String date) {
         Long taskId = idGenerator.getAndIncrement();
-        generateLogFileAsync(date, taskId);
+        AsyncLogFileService proxy = applicationContext.getBean(AsyncLogFileService.class);
+        proxy.generateLogFileAsync(date, taskId);
         return taskId;
     }
 

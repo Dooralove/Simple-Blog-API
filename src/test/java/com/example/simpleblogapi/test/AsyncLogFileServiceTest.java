@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 @ContextConfiguration(classes = {AsyncLogFileService.class, AsyncLogFileServiceTest.TestAsyncConfig.class})
-public class AsyncLogFileServiceTest {
+class AsyncLogFileServiceTest {
 
     @Autowired
     private AsyncLogFileService asyncLogFileService;
@@ -29,19 +29,19 @@ public class AsyncLogFileServiceTest {
     private final Path mainLogFile = logsDir.resolve("app.log");
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         Files.createDirectories(logsDir);
     }
 
     @AfterEach
-    public void tearDown() throws Exception {
+    void tearDown() throws Exception {
         Files.walk(logsDir)
                 .map(Path::toFile)
                 .forEach(File::delete);
     }
 
     @Test
-    public void testGenerateLogFileSuccessfully() throws Exception {
+    void testGenerateLogFileSuccessfully() throws Exception {
         String date = "2025-04-13";
         String logContent = date + " Log entry 1\n" +
                 date + " Log entry 2\n" +
@@ -69,7 +69,7 @@ public class AsyncLogFileServiceTest {
     }
 
     @Test
-    public void testGenerateLogFileFailDueToNoLogsForDate() throws Exception {
+    void testGenerateLogFileFailDueToNoLogsForDate() throws Exception {
         String date = "2025-04-13";
         String logContent = "2025-04-12 Log entry not matching\n";
         try (FileWriter writer = new FileWriter(mainLogFile.toFile())) {
