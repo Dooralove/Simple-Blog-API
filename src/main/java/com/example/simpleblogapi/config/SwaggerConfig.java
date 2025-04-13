@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         info = @Info(
                 title = "Simple Blog API",
-                version = "1.0",
+                version = "1.5",
                 description = "Документация для Simple Blog API",
                 contact = @Contact(name = "Alexandr", email = "sasha22parol@gmail.com"),
                 license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html")

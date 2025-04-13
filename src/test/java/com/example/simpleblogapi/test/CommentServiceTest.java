@@ -8,10 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 import java.util.Arrays;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -26,19 +24,17 @@ class CommentServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        commentService.clearAllCache(); // Ensure cache is clear
+        commentService.clearAllCache();
     }
 
     @Test
     void testGetCommentsByArticle_FromCache() {
         Long articleId = 1L;
         List<Comment> comments = Arrays.asList(new Comment(), new Comment());
-        // First call to populate cache
         when(commentRepository.findCommentsByArticleId(articleId)).thenReturn(comments);
         List<Comment> firstCallResult = commentService.getCommentsByArticle(articleId);
         assertEquals(2, firstCallResult.size());
         verify(commentRepository, times(1)).findCommentsByArticleId(articleId);
-        // Second call should return from cache
         List<Comment> secondCallResult = commentService.getCommentsByArticle(articleId);
         assertEquals(2, secondCallResult.size());
         verify(commentRepository, times(1)).findCommentsByArticleId(articleId); // Still only called once
@@ -52,7 +48,6 @@ class CommentServiceTest {
         List<Comment> result = commentService.getCommentsByArticle(articleId);
         assertEquals(2, result.size());
         verify(commentRepository, times(1)).findCommentsByArticleId(articleId);
-        // Check cache by calling again
         commentService.getCommentsByArticle(articleId);
         verify(commentRepository, times(1)).findCommentsByArticleId(articleId); // Still only called once
     }
@@ -63,7 +58,6 @@ class CommentServiceTest {
         when(commentRepository.findCommentsByArticleId(articleId)).thenReturn(Arrays.asList());
         List<Comment> result = commentService.getCommentsByArticle(articleId);
         assertTrue(result.isEmpty());
-        // Check cache
         List<Comment> cached = commentService.getCommentsByArticle(articleId);
         assertTrue(cached.isEmpty());
         verify(commentRepository, times(1)).findCommentsByArticleId(articleId); // Only called once
@@ -73,13 +67,10 @@ class CommentServiceTest {
     void testClearCache() {
         Long articleId = 1L;
         List<Comment> comments = Arrays.asList(new Comment());
-        // Populate cache
         when(commentRepository.findCommentsByArticleId(articleId)).thenReturn(comments);
         commentService.getCommentsByArticle(articleId);
         verify(commentRepository, times(1)).findCommentsByArticleId(articleId);
-        // Clear cache
         commentService.clearCache(articleId);
-        // Now, calling again should call repository
         commentService.getCommentsByArticle(articleId);
         verify(commentRepository, times(2)).findCommentsByArticleId(articleId);
     }
@@ -92,14 +83,11 @@ class CommentServiceTest {
         List<Comment> comments2 = Arrays.asList(new Comment(), new Comment());
         when(commentRepository.findCommentsByArticleId(articleId1)).thenReturn(comments1);
         when(commentRepository.findCommentsByArticleId(articleId2)).thenReturn(comments2);
-        // Populate cache
         commentService.getCommentsByArticle(articleId1);
         commentService.getCommentsByArticle(articleId2);
         verify(commentRepository, times(1)).findCommentsByArticleId(articleId1);
         verify(commentRepository, times(1)).findCommentsByArticleId(articleId2);
-        // Clear all cache
         commentService.clearAllCache();
-        // Now, calling again should call repository
         commentService.getCommentsByArticle(articleId1);
         commentService.getCommentsByArticle(articleId2);
         verify(commentRepository, times(2)).findCommentsByArticleId(articleId1);
