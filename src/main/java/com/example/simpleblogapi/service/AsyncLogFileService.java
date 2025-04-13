@@ -9,8 +9,6 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -20,13 +18,12 @@ import org.springframework.stereotype.Service;
 @EnableAsync
 public class AsyncLogFileService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AsyncLogFileService.class);
-
     private static final String LOG_DIRECTORY_PATH = "logs";
     private static final String MAIN_LOG_FILE = LOG_DIRECTORY_PATH + "/app.log";
 
     private final Map<Long, TaskStatus> taskStatusMap = new ConcurrentHashMap<>();
     private final Map<Long, String> taskFileMap = new ConcurrentHashMap<>();
+    private final Map<String, Long> dateTaskMap = new ConcurrentHashMap<>();
     private final AtomicLong idGenerator = new AtomicLong(1);
     private final ApplicationContext applicationContext;
 
@@ -59,13 +56,17 @@ public class AsyncLogFileService {
             taskStatusMap.put(taskId, TaskStatus.COMPLETED);
         } catch (Exception ex) {
             taskStatusMap.put(taskId, TaskStatus.FAILED);
-            LOGGER.error("Error generating log file "
-                    + "asynchronously for taskId {}: {}", taskId, ex.getMessage(), ex);
+            System.err.println("Error generating log file for "
+                    + "taskId " + taskId + ": " + ex.getMessage());
         }
     }
 
     public Long startLogFileGeneration(String date) {
+        if (dateTaskMap.containsKey(date)) {
+            return dateTaskMap.get(date);
+        }
         Long taskId = idGenerator.getAndIncrement();
+        dateTaskMap.put(date, taskId);
         AsyncLogFileService proxy = applicationContext.getBean(AsyncLogFileService.class);
         proxy.generateLogFileAsync(date, taskId);
         return taskId;

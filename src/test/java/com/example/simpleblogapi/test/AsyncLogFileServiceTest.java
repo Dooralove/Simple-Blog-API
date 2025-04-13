@@ -70,23 +70,20 @@ class AsyncLogFileServiceTest {
 
     @Test
     void testGenerateLogFileFailDueToNoLogsForDate() throws Exception {
-        String date = "2025-04-13";
+        String date = "2025-04-14";
         String logContent = "2025-04-12 Log entry not matching\n";
         try (FileWriter writer = new FileWriter(mainLogFile.toFile())) {
             writer.write(logContent);
         }
-
         Long taskId = asyncLogFileService.startLogFileGeneration(date);
-
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until(() ->
-                asyncLogFileService.getTaskStatus(taskId) == TaskStatus.FAILED);
-
+        Awaitility.await().atMost(5, TimeUnit.SECONDS)
+                .until(() -> asyncLogFileService.getTaskStatus(taskId) == TaskStatus.FAILED);
         TaskStatus status = asyncLogFileService.getTaskStatus(taskId);
         Assertions.assertEquals(TaskStatus.FAILED, status, "Статус задачи должен быть FAILED, если нет записей для заданной даты");
-
         File generatedFile = asyncLogFileService.getLogFile(taskId);
         Assertions.assertNull(generatedFile, "Файл не должен быть создан, если нет подходящих логов");
     }
+
 
     @Configuration
     static class TestAsyncConfig {
