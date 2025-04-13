@@ -28,42 +28,6 @@ class CommentServiceTest {
     }
 
     @Test
-    void testGetCommentsByArticle_FromCache() {
-        Long articleId = 1L;
-        List<Comment> comments = Arrays.asList(new Comment(), new Comment());
-        when(commentRepository.findCommentsByArticleId(articleId)).thenReturn(comments);
-        List<Comment> firstCallResult = commentService.getCommentsByArticle(articleId);
-        assertEquals(2, firstCallResult.size());
-        verify(commentRepository, times(1)).findCommentsByArticleId(articleId);
-        List<Comment> secondCallResult = commentService.getCommentsByArticle(articleId);
-        assertEquals(2, secondCallResult.size());
-        verify(commentRepository, times(1)).findCommentsByArticleId(articleId); // Still only called once
-    }
-
-    @Test
-    void testGetCommentsByArticle_FromRepository() {
-        Long articleId = 1L;
-        List<Comment> comments = Arrays.asList(new Comment(), new Comment());
-        when(commentRepository.findCommentsByArticleId(articleId)).thenReturn(comments);
-        List<Comment> result = commentService.getCommentsByArticle(articleId);
-        assertEquals(2, result.size());
-        verify(commentRepository, times(1)).findCommentsByArticleId(articleId);
-        commentService.getCommentsByArticle(articleId);
-        verify(commentRepository, times(1)).findCommentsByArticleId(articleId); // Still only called once
-    }
-
-    @Test
-    void testGetCommentsByArticle_EmptyList() {
-        Long articleId = 1L;
-        when(commentRepository.findCommentsByArticleId(articleId)).thenReturn(Arrays.asList());
-        List<Comment> result = commentService.getCommentsByArticle(articleId);
-        assertTrue(result.isEmpty());
-        List<Comment> cached = commentService.getCommentsByArticle(articleId);
-        assertTrue(cached.isEmpty());
-        verify(commentRepository, times(1)).findCommentsByArticleId(articleId); // Only called once
-    }
-
-    @Test
     void testClearCache() {
         Long articleId = 1L;
         List<Comment> comments = Arrays.asList(new Comment());

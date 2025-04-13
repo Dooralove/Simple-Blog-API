@@ -5,6 +5,8 @@ import com.example.simpleblogapi.repositories.CommentRepository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,14 +19,9 @@ public class CommentService {
         this.commentRepository = commentRepository;
     }
 
+    @Cacheable(value = "commentsByArticle", key = "#articleId")
     public List<Comment> getCommentsByArticle(Long articleId) {
-        if (commentCache.containsKey(articleId)) {
-            return commentCache.get(articleId);
-        }
-
-        List<Comment> comments = commentRepository.findCommentsByArticleId(articleId);
-        commentCache.put(articleId, comments);
-        return comments;
+        return commentRepository.findCommentsByArticleId(articleId);
     }
 
     public void clearCache(Long articleId) {
@@ -35,6 +32,7 @@ public class CommentService {
         commentCache.clear();
     }
 
+    @CacheEvict(value = "commentsByArticle", key = "#comment.article.id")
     public Comment createComment(Comment commentEntity) {
         return commentRepository.save(commentEntity);
     }
