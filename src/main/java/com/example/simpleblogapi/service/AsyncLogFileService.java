@@ -9,6 +9,8 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 @EnableAsync
 public class AsyncLogFileService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AsyncLogFileService.class);
 
     private static final String LOG_DIRECTORY_PATH = "logs";
     private static final String MAIN_LOG_FILE = LOG_DIRECTORY_PATH + "/app.log";
@@ -45,7 +49,6 @@ public class AsyncLogFileService {
             if (filteredLogs.isEmpty()) {
                 throw new IOException("Логи за указанную дату не найдены.");
             }
-
             String dailyLogFilePath = LOG_DIRECTORY_PATH + "/daily-log-" + taskId + ".log";
             try (FileWriter writer = new FileWriter(dailyLogFilePath)) {
                 for (String log : filteredLogs) {
@@ -56,8 +59,8 @@ public class AsyncLogFileService {
             taskStatusMap.put(taskId, TaskStatus.COMPLETED);
         } catch (Exception ex) {
             taskStatusMap.put(taskId, TaskStatus.FAILED);
-            System.err.println("Error generating log file for "
-                    + "taskId " + taskId + ": " + ex.getMessage());
+            logger.error("Error generating log file for"
+                    + " taskId {}: {}", taskId, ex.getMessage(), ex);
         }
     }
 
