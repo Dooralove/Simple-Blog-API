@@ -34,29 +34,25 @@ public class AsyncLogFileService {
     @Async
     public void generateLogFileAsync(String date, Long taskId) {
         taskStatusMap.put(taskId, TaskStatus.IN_PROGRESS);
-
         try {
             if (!Files.exists(Paths.get(MAIN_LOG_FILE))) {
                 throw new IOException("Основной лог-файл не найден");
             }
-
             var logLines = Files.readAllLines(Paths.get(MAIN_LOG_FILE));
             var filteredLogs = logLines.stream()
                     .filter(line -> line.startsWith(date))
                     .toList();
-
             if (filteredLogs.isEmpty()) {
                 throw new IOException("Логи за указанную дату не найдены.");
             }
-
-            String dailyLogFilePath = LOG_DIRECTORY_PATH + "/daily-log-" + date + ".log";
+            
+            String dailyLogFilePath = LOG_DIRECTORY_PATH + "/daily-log-" + taskId + ".log";
 
             try (FileWriter writer = new FileWriter(dailyLogFilePath)) {
                 for (String log : filteredLogs) {
                     writer.write(log + System.lineSeparator());
                 }
             }
-
             taskFileMap.put(taskId, dailyLogFilePath);
             taskStatusMap.put(taskId, TaskStatus.COMPLETED);
         } catch (Exception ex) {
@@ -71,6 +67,7 @@ public class AsyncLogFileService {
         proxy.generateLogFileAsync(date, taskId);
         return taskId;
     }
+
 
     public TaskStatus getTaskStatus(Long taskId) {
         return taskStatusMap.get(taskId);
