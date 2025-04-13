@@ -5,10 +5,10 @@ import com.example.simpleblogapi.entities.Tag;
 import com.example.simpleblogapi.exceptions.ResourceNotFoundException;
 import com.example.simpleblogapi.repositories.ArticleRepository;
 import com.example.simpleblogapi.repositories.TagRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -112,6 +112,13 @@ public class ArticleService {
             article.setDislikes(article.getDislikes() - 1);
         }
         return articleRepository.save(article);
+    }
+
+    public List<Tag> getTagsByArticleId(Long articleId) {
+        // Предполагается, что у статьи есть поле tags или свой метод в репозитории
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new EntityNotFoundException("Статья не найдена"));
+        return article.getTags();
     }
 }
 

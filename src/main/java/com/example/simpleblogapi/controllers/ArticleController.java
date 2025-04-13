@@ -1,6 +1,7 @@
 package com.example.simpleblogapi.controllers;
 
 import com.example.simpleblogapi.entities.Article;
+import com.example.simpleblogapi.entities.Tag;
 import com.example.simpleblogapi.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -272,5 +273,19 @@ public class ArticleController {
                     required = true
             ) @PathVariable Long id) {
         return articleService.removeDislike(id);
+    }
+
+    @Operation(
+            summary = "Получение тегов для статьи",
+            description = "Возвращает список тегов, связанных с "
+                    + "конкретной статьей по ее идентификатору."
+    )
+    @GetMapping("/{articleId}/tags")
+    public List<Tag> getTagsForArticle(
+            @Parameter(description = "Идентификатор статьи,"
+                    + " для которой необходимо получить теги", example = "1")
+            @PathVariable Long articleId
+    ) {
+        return articleService.getTagsByArticleId(articleId);
     }
 }
