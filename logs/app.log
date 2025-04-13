@@ -1,2 +1,2 @@
 2025-04-12 Log entry not matching
-2025-04-13 19:50:52 [SpringApplicationShutdownHook] DEBUG o.s.w.c.s.GenericWebApplicationContext - Closing org.springframework.web.context.support.GenericWebApplicationContext@501e4936, started on Sun Apr 13 19:50:51 MSK 2025
+2025-04-13 19:59:38 [SpringApplicationShutdownHook] DEBUG o.s.w.c.s.GenericWebApplicationContext - Closing org.springframework.web.context.support.GenericWebApplicationContext@4ac6e9c0, started on Sun Apr 13 19:59:37 MSK 2025

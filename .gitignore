@@ -1,34 +1,56 @@
-HELP.md
+# Java / Maven / Gradle
 target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+build/
+out/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
+# IntelliJ IDEA
+.idea/
 *.iml
 *.ipr
-*.log
+*.iws
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
+# VS Code
 .vscode/
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Environment files
+.env
+
+# Dependency directories
+node_modules/
+
+# Generated files
+*.class
+*.jar
+*.war
+*.ear
+
+# Temp files
+*.tmp
+*.swp
+
+# Git
+*.orig
+
+# Docker
+docker-compose.override.yml
+
+# Specific for your project
+# (если у вас есть специфическая папка для логов — оставляем)
+logs/
+
+# Ignore any daily logs or custom generated log files
+daily-log-*.log
+
+# Optional: ignore uploaded files if you have file uploads
+uploads/
