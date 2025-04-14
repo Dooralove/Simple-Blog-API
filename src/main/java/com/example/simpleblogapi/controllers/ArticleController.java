@@ -288,4 +288,24 @@ public class ArticleController {
     ) {
         return articleService.getTagsByArticleId(articleId);
     }
+
+    @Operation(
+            summary = "Обновление статьи",
+            description = "Обновляет существующую статью по её уникальному идентификатору."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Статья успешно обновлена"),
+        @ApiResponse(responseCode = "404", description =
+                "Статья не найдена", content = @Content)
+    })
+    @PutMapping("/{id}")
+    public Article updateArticle(
+            @Parameter(
+                    in = ParameterIn.PATH,
+                    description = "Уникальный идентификатор статьи для обновления",
+                    required = true
+            ) @PathVariable Long id,
+            @Valid @RequestBody Article updatedArticle) {
+        return articleService.updateArticle(id, updatedArticle);
+    }
 }

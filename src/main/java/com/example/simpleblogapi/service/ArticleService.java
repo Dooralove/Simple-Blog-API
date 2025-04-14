@@ -120,5 +120,14 @@ public class ArticleService {
                 .orElseThrow(() -> new EntityNotFoundException("Статья не найдена"));
         return article.getTags();
     }
+
+    public Article updateArticle(Long id, Article updatedArticle) {
+        Article existingArticle = articleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Article not found"));
+        existingArticle.setTitle(updatedArticle.getTitle());
+        existingArticle.setContent(updatedArticle.getContent());
+        return articleRepository.save(existingArticle);
+    }
 }
+
 
