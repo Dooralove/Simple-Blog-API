@@ -4,7 +4,6 @@ import com.example.simpleblogapi.entities.VisitCount;
 import com.example.simpleblogapi.repositories.VisitCountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,14 +20,10 @@ public class VisitCounterService {
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public synchronized long incrementVisit(String url) {
-        try {
-            if (visitCountRepository.updateVisitCount(url) > 0) {
-                return getCountOrThrow(url, "Счетчик не найден после успешного обновления для URL.");
-            }
-            return saveNewOrUpdateRetry(url);
-        } finally {
-            log.trace("Exiting synchronized incrementVisit");
+        if (visitCountRepository.updateVisitCount(url) > 0) {
+            return getCountOrThrow(url, "Счетчик не найден после успешного обновления для URL.");
         }
+        return saveNew(url);
     }
 
     private long getCountOrThrow(String url, String errorMessage) {
@@ -39,23 +34,12 @@ public class VisitCounterService {
         return count;
     }
 
-    private long saveNewOrUpdateRetry(String url) {
-        try {
-            VisitCount newVisitCount = new VisitCount();
-            newVisitCount.setUrl(url);
-            newVisitCount.setCount(1L);
-            visitCountRepository.saveAndFlush(newVisitCount);
-            return 1L;
-        } catch (DataIntegrityViolationException e) {
-            if (visitCountRepository.updateVisitCount(url) > 0) {
-                return getCountOrThrow(url, "Счетчик не найден после успешного повторного обновления для URL.");
-            }
-            Long finalCount = visitCountRepository.findCountByUrl(url);
-            if (finalCount != null) {
-                return finalCount;
-            }
-            throw new RuntimeException("Не удалось инкрементировать счетчик после обработки конфликта.");
-        }
+    private long saveNew(String url) {
+        VisitCount newVisitCount = new VisitCount();
+        newVisitCount.setUrl(url);
+        newVisitCount.setCount(1L);
+        visitCountRepository.saveAndFlush(newVisitCount);
+        return 1L;
     }
 
     public long getVisitCount(String url) {
