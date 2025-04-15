@@ -15,54 +15,43 @@ let theme = createTheme({
             dark: blue[800],
         },
         secondary: {
-            main: pink[500], // Пример вторичного цвета
+            main: pink[500],
             light: pink[300],
             dark: pink[700],
         },
         background: {
-            // Цвет фона для "бумажных" элементов (Карточки, Контейнер)
             paper: '#ffffff',
-            // Цвет фона для всей страницы (body) - создаем контраст
             default: grey[100], // Очень светло-серый
         },
-        // Можно добавить другие настройки, например, типографику
     },
     typography: {
         h4: {
-            fontWeight: 600, // Делаем заголовки чуть жирнее
+            fontWeight: 600,
         },
         h5: {
             fontWeight: 600,
         },
-        // ... другие настройки типографики
     },
     shape: {
-        borderRadius: 8, // Устанавливаем базовое скругление углов (в px * множитель темы, обычно 1 = 8px)
+        borderRadius: 8,
     },
     components: {
-        // --- Глобальные стили для body через CssBaseline ---
         MuiCssBaseline: {
             styleOverrides: `
             body {
-              background-color: ${grey[100]}; // Устанавливаем фон для body
-              // --- Альтернативный вариант: Градиент ---
-              // background: linear-gradient(135deg, ${blue[50]} 0%, ${grey[50]} 100%);
-              // background-attachment: fixed;
+              background-color: ${grey[100]}; 
+               ${blue[50]} 0%, ${grey[50]} 100%);
             }
           `,
         },
-        // --- Кастомизация Карточек ---
         MuiCard: {
             styleOverrides: {
                 root: {
-                    // Увеличим тень и скругление для лучшего выделения
                     boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                    borderRadius: 12, // Делаем углы карт более скругленными
-                    border: `1px solid ${grey[200]}`, // Добавляем тонкую границу
-                    // Убедимся что карточки имеют стандартный фон, если не переопределен
-                    backgroundColor: '#ffffff', // Явно задаем белый фон для карт
-                    // Добавим бордер, перенесенный из ArticleList, для консистентности
-                    borderLeft: `5px solid ${blue[700]}` // Используем основной цвет темы
+                    borderRadius: 12,
+                    border: `1px solid ${grey[200]}`,
+                    backgroundColor: '#ffffff',
+                    borderLeft: `5px solid ${blue[700]}`
                 }
             }
         },
@@ -70,7 +59,7 @@ let theme = createTheme({
         MuiButton: {
             styleOverrides: {
                 root: {
-                    // textTransform: 'none', // Убрать КАПС в кнопках
+
                 }
             }
         },
@@ -78,12 +67,11 @@ let theme = createTheme({
         MuiPaper: {
             styleOverrides: {
                 root: {
-                    // Можно добавить общие стили, например, тень по умолчанию
-                    // boxShadow: theme.shadows[2], // Пример
+
                 }
             }
         },
-        // Можно добавить другие компоненты...
+
     }
 });
 
