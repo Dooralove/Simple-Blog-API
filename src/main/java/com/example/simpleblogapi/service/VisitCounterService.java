@@ -22,39 +22,39 @@ public class VisitCounterService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public synchronized long incrementVisit(String url) {
         try {
-            int updatedRows = visitCountRepository.updateVisitCount(url);
-            if (updatedRows > 0) {
-                Long count = visitCountRepository.findCountByUrl(url);
-                if (count == null) {
-                    throw new IllegalStateException("Счетчик не найден после успешного обновления для URL.");
-                }
-                return count;
-            } else {
-                try {
-                    VisitCount newVisitCount = new VisitCount();
-                    newVisitCount.setUrl(url);
-                    newVisitCount.setCount(1L);
-                    visitCountRepository.saveAndFlush(newVisitCount);
-                    return 1L;
-                } catch (DataIntegrityViolationException e) {
-                    int retryUpdatedRows = visitCountRepository.updateVisitCount(url);
-                    if (retryUpdatedRows > 0) {
-                        Long count = visitCountRepository.findCountByUrl(url);
-                        if (count == null) {
-                            throw new IllegalStateException("Счетчик не найден после успешного повторного обновления для URL.");
-                        }
-                        return count;
-                    } else {
-                        Long finalCount = visitCountRepository.findCountByUrl(url);
-                        if (finalCount != null) {
-                            return finalCount;
-                        }
-                        throw new RuntimeException("Не удалось инкрементировать счетчик после обработки конфликта.");
-                    }
-                }
+            if (visitCountRepository.updateVisitCount(url) > 0) {
+                return getCountOrThrow(url, "Счетчик не найден после успешного обновления для URL.");
             }
+            return saveNewOrUpdateRetry(url);
         } finally {
             log.trace("Exiting synchronized incrementVisit");
+        }
+    }
+
+    private long getCountOrThrow(String url, String errorMessage) {
+        Long count = visitCountRepository.findCountByUrl(url);
+        if (count == null) {
+            throw new IllegalStateException(errorMessage);
+        }
+        return count;
+    }
+
+    private long saveNewOrUpdateRetry(String url) {
+        try {
+            VisitCount newVisitCount = new VisitCount();
+            newVisitCount.setUrl(url);
+            newVisitCount.setCount(1L);
+            visitCountRepository.saveAndFlush(newVisitCount);
+            return 1L;
+        } catch (DataIntegrityViolationException e) {
+            if (visitCountRepository.updateVisitCount(url) > 0) {
+                return getCountOrThrow(url, "Счетчик не найден после успешного повторного обновления для URL.");
+            }
+            Long finalCount = visitCountRepository.findCountByUrl(url);
+            if (finalCount != null) {
+                return finalCount;
+            }
+            throw new RuntimeException("Не удалось инкрементировать счетчик после обработки конфликта.");
         }
     }
 
