@@ -4,6 +4,7 @@ import com.example.simpleblogapi.entities.VisitCount;
 import com.example.simpleblogapi.repositories.VisitCountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,26 +21,42 @@ public class VisitCounterService {
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public synchronized long incrementVisit(String url) {
-        if (visitCountRepository.updateVisitCount(url) > 0) {
-            return getCountOrThrow(url, "Счетчик не найден после успешного обновления для URL.");
+        try {
+            int updatedRows = visitCountRepository.updateVisitCount(url);
+            if (updatedRows > 0) {
+                Long count = visitCountRepository.findCountByUrl(url);
+                if (count == null) {
+                    throw new IllegalStateException("Счетчик не найден после успешного обновления для URL.");
+                }
+                return count;
+            } else {
+                try {
+                    VisitCount newVisitCount = new VisitCount();
+                    newVisitCount.setUrl(url);
+                    newVisitCount.setCount(1L);
+                    visitCountRepository.saveAndFlush(newVisitCount);
+                    return 1L;
+                } catch (DataIntegrityViolationException e) {
+                    int retryUpdatedRows = visitCountRepository.updateVisitCount(url);
+                    if (retryUpdatedRows > 0) {
+                        Long count = visitCountRepository.findCountByUrl(url);
+                        if (count == null) {
+                            throw new IllegalStateException("Счетчик не найден после успешного повторного обновления для URL.");
+                        }
+                        return count;
+                    } else {
+                        Long finalCount = visitCountRepository.findCountByUrl(url);
+                        if (finalCount != null) {
+                            return finalCount;
+                        }
+                        throw new RuntimeException("Не удалось инкрементировать счетчик после обработки конфликта.");
+                    }
+                }
+            }
+        } finally {
+            // Изменено: не выводим пользовательские данные в лог.
+            log.trace("Exiting synchronized incrementVisit");
         }
-        return saveNew(url);
-    }
-
-    private long getCountOrThrow(String url, String errorMessage) {
-        Long count = visitCountRepository.findCountByUrl(url);
-        if (count == null) {
-            throw new IllegalStateException(errorMessage);
-        }
-        return count;
-    }
-
-    private long saveNew(String url) {
-        VisitCount newVisitCount = new VisitCount();
-        newVisitCount.setUrl(url);
-        newVisitCount.setCount(1L);
-        visitCountRepository.saveAndFlush(newVisitCount);
-        return 1L;
     }
 
     public long getVisitCount(String url) {

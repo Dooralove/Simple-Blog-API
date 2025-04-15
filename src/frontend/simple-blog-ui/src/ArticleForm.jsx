@@ -9,13 +9,13 @@ import {
     Box,
     CircularProgress,
     Alert,
-    useTheme, // Импортируем useTheme
+    useTheme, 
 } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 
 const ArticleForm = ({ existingArticle, onFormSubmit, onCancel }) => {
-    const theme = useTheme(); // Получаем тему
+    const theme = useTheme();
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -70,7 +70,7 @@ const ArticleForm = ({ existingArticle, onFormSubmit, onCancel }) => {
                 padding: { xs: 2, md: 3 },
                 marginTop: 2,
                 marginBottom: 4,
-                borderLeft: `5px solid ${theme.palette.primary.main}`, // Добавим цветную полоску слева
+                borderLeft: `5px solid ${theme.palette.primary.main}`,
             }}
         >
             <Typography
@@ -80,7 +80,7 @@ const ArticleForm = ({ existingArticle, onFormSubmit, onCancel }) => {
                 sx={{
                     fontWeight: "medium",
                     mb: 3,
-                    color: theme.palette.primary.dark, // Используем цвет темы для заголовка
+                    color: theme.palette.primary.dark,
                 }}
             >
                 {existingArticle?.id ? "Редактировать статью" : "Создать новую статью"}

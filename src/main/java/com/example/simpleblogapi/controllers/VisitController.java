@@ -24,11 +24,13 @@ public class VisitController {
 
     @Operation(
             summary = "Увеличение счетчика посещений",
-            description = "Увеличивает счетчик посещений для указанного URL. После вызова возвращается текущее количество посещений данного URL."
+            description = "Увеличивает счетчик посещений для"
+                    + " указанного URL. После вызова возвращается текущее "
+                    + "количество посещений данного URL."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Счетчик успешно увеличен"),
-            @ApiResponse(responseCode = "400", description = "Некорректный запрос или параметр")
+        @ApiResponse(responseCode = "200", description = "Счетчик успешно увеличен"),
+        @ApiResponse(responseCode = "400", description = "Некорректный запрос или параметр")
     })
     @PostMapping("/increment")
     public ResponseEntity<String> incrementVisit(
@@ -47,7 +49,8 @@ public class VisitController {
             description = "Возвращает текущее количество посещений для заданного URL."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Запрос выполнен успешно, возвращает количество посещений"),
+        @ApiResponse(responseCode = "200", description = "Запрос выполнен успешно,"
+                    + " возвращает количество посещений"),
             @ApiResponse(responseCode = "400", description = "Некорректный запрос или параметр")
     })
     @GetMapping("/count")

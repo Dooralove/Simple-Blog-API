@@ -7,12 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class VisitCounterServiceTest {
+public class VisitCounterServiceTest {
 
     private VisitCountRepository visitCountRepository;
     private VisitCounterService visitCounterService;
@@ -24,47 +22,55 @@ class VisitCounterServiceTest {
     }
 
     @Test
-    void incrementVisit_WhenUrlExists_ShouldIncrementCount() {
+    void testIncrementVisit_ExistingUrl() {
         String url = "https://example.com";
-        VisitCount existingVisitCount = new VisitCount();
-        existingVisitCount.setUrl(url);
-        existingVisitCount.setCount(5L);
 
-        when(visitCountRepository.findByUrl(url)).thenReturn(Optional.of(existingVisitCount));
+        when(visitCountRepository.updateVisitCount(url)).thenReturn(1);
+        when(visitCountRepository.findCountByUrl(url)).thenReturn(5L);
 
-        long updatedCount = visitCounterService.incrementVisit(url);
+        long result = visitCounterService.incrementVisit(url);
 
-        assertEquals(6L, updatedCount);
-        verify(visitCountRepository).save(existingVisitCount);
+        assertEquals(5L, result);
+        verify(visitCountRepository).updateVisitCount(url);
+        verify(visitCountRepository).findCountByUrl(url);
     }
 
     @Test
-    void incrementVisit_WhenUrlDoesNotExist_ShouldCreateNewVisitCount() {
-        String url = "https://newsite.com";
+    void testIncrementVisit_NewUrl() {
+        String url = "https://new-url.com";
 
-        when(visitCountRepository.findByUrl(url)).thenReturn(Optional.empty());
+        when(visitCountRepository.updateVisitCount(url)).thenReturn(0);
+
+        long result = visitCounterService.incrementVisit(url);
+
+        assertEquals(1L, result);
 
         ArgumentCaptor<VisitCount> captor = ArgumentCaptor.forClass(VisitCount.class);
+        verify(visitCountRepository).saveAndFlush(captor.capture());
 
-        long updatedCount = visitCounterService.incrementVisit(url);
-
-        assertEquals(1L, updatedCount);
-        verify(visitCountRepository).save(captor.capture());
-
-        VisitCount savedVisitCount = captor.getValue();
-        assertEquals(url, savedVisitCount.getUrl());
-        assertEquals(1L, savedVisitCount.getCount());
+        VisitCount saved = captor.getValue();
+        assertEquals(url, saved.getUrl());
+        assertEquals(1L, saved.getCount());
     }
 
     @Test
-    void getVisitCount_WhenUrlExists_ShouldReturnCount() {
-        // given
+    void testIncrementVisit_ThrowsWhenCountMissingAfterUpdate() {
         String url = "https://example.com";
-        VisitCount existingVisitCount = new VisitCount();
-        existingVisitCount.setUrl(url);
-        existingVisitCount.setCount(10L);
 
-        when(visitCountRepository.findByUrl(url)).thenReturn(Optional.of(existingVisitCount));
+        when(visitCountRepository.updateVisitCount(url)).thenReturn(1);
+        when(visitCountRepository.findCountByUrl(url)).thenReturn(null);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
+            visitCounterService.incrementVisit(url);
+        });
+
+        assertEquals("Счетчик не найден после успешного обновления для URL.", exception.getMessage());
+    }
+
+    @Test
+    void testGetVisitCount_WhenExists() {
+        String url = "https://exists.com";
+        when(visitCountRepository.findCountByUrl(url)).thenReturn(10L);
 
         long count = visitCounterService.getVisitCount(url);
 
@@ -72,10 +78,9 @@ class VisitCounterServiceTest {
     }
 
     @Test
-    void getVisitCount_WhenUrlDoesNotExist_ShouldReturnZero() {
-        String url = "https://unknown.com";
-
-        when(visitCountRepository.findByUrl(url)).thenReturn(Optional.empty());
+    void testGetVisitCount_WhenNotExists() {
+        String url = "https://not-exist.com";
+        when(visitCountRepository.findCountByUrl(url)).thenReturn(null);
 
         long count = visitCounterService.getVisitCount(url);
 
