@@ -23,12 +23,10 @@ public class VisitCounterService {
     public synchronized long incrementVisit(String url) {
         try {
             int updatedRows = visitCountRepository.updateVisitCount(url);
-
             if (updatedRows > 0) {
                 Long count = visitCountRepository.findCountByUrl(url);
                 if (count == null) {
-                    throw new IllegalStateException("Счетчик не найден после "
-                            + "успешного обновления для URL: " + url);
+                    throw new IllegalStateException("Счетчик не найден после успешного обновления для URL.");
                 }
                 return count;
             } else {
@@ -39,14 +37,11 @@ public class VisitCounterService {
                     visitCountRepository.saveAndFlush(newVisitCount);
                     return 1L;
                 } catch (DataIntegrityViolationException e) {
-
                     int retryUpdatedRows = visitCountRepository.updateVisitCount(url);
-
                     if (retryUpdatedRows > 0) {
                         Long count = visitCountRepository.findCountByUrl(url);
                         if (count == null) {
-                            throw new IllegalStateException("Счетчик не найден"
-                                    + " после успешного повторного обновления для URL: " + url);
+                            throw new IllegalStateException("Счетчик не найден после успешного повторного обновления для URL.");
                         }
                         return count;
                     } else {
@@ -54,13 +49,12 @@ public class VisitCounterService {
                         if (finalCount != null) {
                             return finalCount;
                         }
-                        throw new RuntimeException("Не удалось инкрементировать "
-                                + "счетчик для URL: " + url + " после обработки конфликта.");
+                        throw new RuntimeException("Не удалось инкрементировать счетчик после обработки конфликта.");
                     }
                 }
             }
         } finally {
-            log.trace("Exiting synchronized incrementVisit for URL: {}", url);
+            log.trace("Exiting synchronized incrementVisit");
         }
     }
 

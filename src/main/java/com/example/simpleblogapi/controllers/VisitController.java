@@ -24,18 +24,20 @@ public class VisitController {
 
     @Operation(
             summary = "Увеличение счетчика посещений",
-            description = "Увеличивает счетчик посещений для указанного URL."
-                    + " После вызова возвращается текущее количество посещений данного URL."
+            description = "Увеличивает счетчик посещений для указанного URL. После вызова возвращается текущее количество посещений данного URL."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Счетчик успешно увеличен"),
-        @ApiResponse(responseCode = "400", description = "Некорректный запрос или параметр")
+            @ApiResponse(responseCode = "200", description = "Счетчик успешно увеличен"),
+            @ApiResponse(responseCode = "400", description = "Некорректный запрос или параметр")
     })
     @PostMapping("/increment")
     public ResponseEntity<String> incrementVisit(
-            @Parameter(description = "URL, по которому необходимо"
-                    + " увеличить счетчик посещений", required = true)
+            @Parameter(
+                    description = "URL, по которому необходимо увеличить счетчик посещений",
+                    required = true
+            )
             @RequestParam String url) {
+
         long count = visitCounterService.incrementVisit(url);
         return ResponseEntity.ok("URL '" + url + "' посещён " + count + " раз.");
     }
@@ -45,15 +47,17 @@ public class VisitController {
             description = "Возвращает текущее количество посещений для заданного URL."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Запрос выполнен успешно,"
-                + " возвращает количество посещений"),
-        @ApiResponse(responseCode = "400", description = "Некорректный запрос или параметр")
+            @ApiResponse(responseCode = "200", description = "Запрос выполнен успешно, возвращает количество посещений"),
+            @ApiResponse(responseCode = "400", description = "Некорректный запрос или параметр")
     })
     @GetMapping("/count")
     public ResponseEntity<String> getVisitCount(
-            @Parameter(description = "URL, для которого необходимо"
-                    + " получить количество посещений", required = true)
+            @Parameter(
+                    description = "URL, для которого необходимо получить количество посещений",
+                    required = true
+            )
             @RequestParam String url) {
+
         long count = visitCounterService.getVisitCount(url);
         return ResponseEntity.ok("URL '" + url + "' посещён " + count + " раз.");
     }
