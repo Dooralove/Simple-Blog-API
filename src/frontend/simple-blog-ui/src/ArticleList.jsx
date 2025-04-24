@@ -23,7 +23,7 @@ import {
     ListItem,
     ListItemText,
     Tooltip,
-    useTheme, // Keep useTheme to access theme colors/modes when needed
+    useTheme,
     Fade,
 } from "@mui/material";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
@@ -36,13 +36,11 @@ import AddCommentIcon from "@mui/icons-material/AddComment";
 import TagIcon from "@mui/icons-material/Tag";
 
 const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
-    // Get the current theme object to access its properties (e.g., palette)
     const theme = useTheme();
     const [articles, setArticles] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // State for dialogs
     const [openCommentDialog, setOpenCommentDialog] = useState(false);
     const [openTagDialog, setOpenTagDialog] = useState(false);
     const [currentArticleId, setCurrentArticleId] = useState(null);
@@ -50,11 +48,9 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
     const [selectedTag, setSelectedTag] = useState(null);
     const [allTags, setAllTags] = useState([]);
 
-    // State for expanding comments/tags sections
     const [openCommentsMap, setOpenCommentsMap] = useState({});
     const [openTagsMap, setOpenTagsMap] = useState({});
 
-    // Maps to store loaded comments/tags per article
     const [commentsMap, setCommentsMap] = useState({});
     const [tagsMap, setTagsMap] = useState({});
 
@@ -62,7 +58,6 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
     const handleToggleComments = async (articleId) => {
         const willBeOpen = !openCommentsMap[articleId];
         setOpenCommentsMap((prev) => ({ ...prev, [articleId]: willBeOpen }));
-        // Fetch comments only if opening and not already fetched/loading
         if (willBeOpen && !commentsMap.hasOwnProperty(articleId)) {
             await fetchComments(articleId);
         }
@@ -71,7 +66,6 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
     const handleToggleTags = async (articleId) => {
         const willBeOpen = !openTagsMap[articleId];
         setOpenTagsMap((prev) => ({ ...prev, [articleId]: willBeOpen }));
-        // Fetch tags only if opening and not already fetched/loading
         if (willBeOpen && !tagsMap.hasOwnProperty(articleId)) {
             await fetchTags(articleId);
         }
@@ -83,7 +77,6 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
         setError(null);
         try {
             const response = await axios.get("http://localhost:8080/articles/all");
-            // Sort by ID descending (newest first)
             const sortedArticles = response.data.sort((a, b) => b.id - a.id);
             setArticles(sortedArticles);
         } catch (err) {
@@ -94,59 +87,50 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
         } finally {
             setIsLoading(false);
         }
-    }, []); // Empty dependency array means this function is created once
+    }, []);
 
     const fetchComments = useCallback(async (articleId) => {
-        // Indicate loading state for this specific article's comments
         setCommentsMap((prev) => ({ ...prev, [articleId]: undefined }));
         try {
             const response = await axios.get(
                 `http://localhost:8080/comments/by-article/${articleId}`
             );
-            // Store fetched comments (or empty array if null/undefined)
             setCommentsMap((prev) => ({
                 ...prev,
                 [articleId]: response.data || [],
             }));
         } catch (error) {
             console.error(`Error fetching comments for article ${articleId}:`, error);
-            // Store empty array on error to stop loading indicator
             setCommentsMap((prev) => ({ ...prev, [articleId]: [] }));
         }
-    }, []); // Also created once
+    }, []);
 
     const fetchTags = useCallback(async (articleId) => {
-        // Indicate loading state for tags
         setTagsMap((prev) => ({ ...prev, [articleId]: undefined }));
         try {
             const response = await axios.get(
                 `http://localhost:8080/articles/${articleId}/tags`
             );
-            // Store fetched tags (or empty array)
             setTagsMap((prev) => ({ ...prev, [articleId]: response.data || [] }));
         } catch (error) {
             console.error(`Error fetching tags for article ${articleId}:`, error);
-            // Store empty array on error
             setTagsMap((prev) => ({ ...prev, [articleId]: [] }));
         }
-    }, []); // Created once
+    }, []);
 
     const fetchAllTags = useCallback(async () => {
-        // No loading indicator needed for this background fetch usually
         try {
             const response = await axios.get("http://localhost:8080/tags/all");
             setAllTags(response.data || []);
         } catch (error) {
             console.error("Error fetching all tags:", error);
-            // Handle error maybe? For now, just log it.
         }
-    }, []); // Created once
+    }, []);
 
-    // Fetch initial data on mount and when refreshFlag changes
     useEffect(() => {
         fetchArticles();
-        fetchAllTags(); // Fetch all available tags for the dialog
-    }, [refreshFlag, fetchArticles, fetchAllTags]); // Include memoized functions
+        fetchAllTags();
+    }, [refreshFlag, fetchArticles, fetchAllTags]);
 
     // --- Action Handlers ---
     const handleAction = async (
@@ -158,18 +142,15 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
         try {
             await axios({ method, url: actionUrl });
             console.log(successMessage);
-            // Re-fetch articles to update counts immediately
             fetchArticles();
         } catch (error) {
             console.error(errorMessage, error);
             const apiError = error.response?.data?.message || error.message || "Network error";
-            // Display temporary error message
             setError(`${errorMessage}: ${apiError}`);
-            setTimeout(() => setError(null), 5000); // Clear error after 5 seconds
+            setTimeout(() => setError(null), 5000);
         }
     };
 
-    // Specific actions calling the generic handler
     const handleLike = (id) =>
         handleAction(
             `http://localhost:8080/articles/${id}/like`,
@@ -186,19 +167,16 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
         );
 
     const handleDeleteArticle = async (id) => {
-        // Use browser confirm dialog
         if (window.confirm("Are you sure you want to delete this article?")) {
-            setError(null); // Clear previous errors
+            setError(null);
             try {
                 await axios.delete(`http://localhost:8080/articles/${id}`);
                 console.log(`Article ${id} deleted`);
-                // Trigger refresh in parent component (App.js)
                 onDelete();
             } catch (error) {
                 console.error(`Error deleting article ${id}:`, error);
                 const apiError = error.response?.data?.message || error.message || "Network error";
                 setError(`Failed to delete article: ${apiError}`);
-                // Don't auto-clear deletion errors
             }
         }
     };
@@ -220,16 +198,13 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
                 content: commentText,
             });
             handleCloseCommentDialog();
-            // Refresh comments for the specific article
             await fetchComments(currentArticleId);
-            // Ensure the comments section is open after adding
             if (!openCommentsMap[currentArticleId]) {
                 setOpenCommentsMap((prev) => ({ ...prev, [currentArticleId]: true }));
             }
         } catch (error) {
             console.error("Error adding comment:", error);
             const apiError = error.response?.data?.message || error.message || "Network error";
-            // Show error to user (could use Snackbar later)
             alert(`Failed to add comment: ${apiError}`);
         }
     };
@@ -239,11 +214,9 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
         setCurrentArticleId(articleId);
         setSelectedTag(null); // Reset selection
         setOpenTagDialog(true);
-        // Fetch tags for this article if not already loaded/loading
         if (!tagsMap.hasOwnProperty(articleId)) {
             fetchTags(articleId);
         }
-        // Fetch all tags if the list is empty (e.g., first time opening)
         if (!allTags.length) {
             fetchAllTags();
         }
@@ -253,21 +226,17 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
     const handleSubmitTag = async () => {
         if (!selectedTag || !currentArticleId) return;
         try {
-            // API endpoint to associate tag with article
             await axios.put(
                 `http://localhost:8080/articles/${currentArticleId}/tags/${selectedTag.id}`
             );
             handleCloseTagDialog();
-            // Refresh tags for the specific article
             await fetchTags(currentArticleId);
-            // Ensure the tags section is open after adding
             if (!openTagsMap[currentArticleId]) {
                 setOpenTagsMap((prev) => ({ ...prev, [currentArticleId]: true }));
             }
         } catch (error) {
             console.error("Error adding tag:", error);
             const apiError = error.response?.data?.message || error.message || "Network error";
-            // Show error to user
             alert(`Failed to add tag: ${apiError}`);
         }
     };
@@ -281,7 +250,6 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
         );
     }
 
-    // Show error if loading failed and there are no articles to display
     if (error && articles.length === 0) {
         return <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>;
     }
@@ -503,21 +471,17 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
                         {(() => {
                             const currentArticleTags = tagsMap[currentArticleId];
-                            // Loading state while fetching article's current tags
                             if (currentArticleTags === undefined && currentArticleId) {
                                 return <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', p: 2 }}><CircularProgress size={25} /></Box>;
                             }
-                            // Determine which tags are available to be added
                             const currentArticleTagIds = (currentArticleTags || []).map(t => t.id);
                             const availableTags = allTags.filter(tag => !currentArticleTagIds.includes(tag.id));
 
-                            // Message if no tags can be added
                             if (availableTags.length === 0) {
                                 return <Typography variant="body2" color="text.secondary" sx={{ width: '100%', textAlign: 'center', mt: 2, mb: 1 }}>
                                     {allTags.length === 0 ? "Tag list is empty." : "All available tags already added."}
                                 </Typography>;
                             }
-                            // Display available tags as clickable Chips
                             return availableTags.map((tag) => (
                                 <Chip
                                     key={tag.id}

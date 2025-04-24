@@ -17,43 +17,43 @@ const getDesignTokens = (mode) => ({
             ? // --- Light Mode Palette ---
             {
                 primary: {
-                    main: blue[700],      // Standard blue
+                    main: blue[700],
                     light: blue[500],
                     dark: blue[800],
                     contrastText: '#ffffff',
                 },
                 secondary: {
-                    main: pink[500],       // Standard pink
+                    main: pink[500],
                     light: pink[300],
                     dark: pink[700],
                     contrastText: '#ffffff',
                 },
                 background: {
-                    paper: '#ffffff',      // White paper
-                    default: grey[100],     // Very light grey background
+                    paper: '#ffffff',
+                    default: grey[100],
                 },
                 text: {
-                    primary: grey[900],     // Dark grey text
-                    secondary: grey[700],   // Medium grey text
+                    primary: grey[900],
+                    secondary: grey[700],
                 },
-                divider: grey[300],       // Light divider
+                divider: grey[300],
                 success: {
-                    main: green[700],     // Standard green
+                    main: green[700],
                     light: green[500],
                     dark: green[800],
                 },
                 error: {
-                    main: red[600],       // Standard red
+                    main: red[600],
                     light: red[400],
                     dark: red[800],
                 },
                 warning: {
-                    main: amber[700],     // Standard amber/orange
+                    main: amber[700],
                     light: amber[500],
                     dark: amber[800],
                 },
                 info: {
-                    main: lightBlue[600], // Standard light blue
+                    main: lightBlue[600],
                     light: lightBlue[400],
                     dark: lightBlue[800],
                 },
@@ -67,53 +67,53 @@ const getDesignTokens = (mode) => ({
             : // --- Dark Mode Palette (Revised Colors) ---
             {
                 primary: {
-                    main: blue[300],      // Lighter blue for main actions
-                    light: blue[200],     // Even lighter for hover/secondary states
-                    dark: blue[400],      // Slightly darker for emphasis
-                    contrastText: grey[900], // Dark text on light blue buttons
+                    main: blue[300],
+                    light: blue[200],
+                    dark: blue[400],
+                    contrastText: grey[900],
                 },
                 secondary: {
-                    main: pink[300],       // Lighter pink
+                    main: pink[300],
                     light: pink[200],
                     dark: pink[400],
-                    contrastText: grey[900], // Dark text on light pink buttons
+                    contrastText: grey[900],
                 },
                 background: {
-                    paper: blueGrey[800],   // Dark blue-grey for cards/paper (#37474f)
-                    default: blueGrey[900], // Slightly darker blue-grey for body (#263238)
+                    paper: blueGrey[800],
+                    default: blueGrey[900],
                 },
                 text: {
-                    primary: grey[100],     // Off-white for primary text
-                    secondary: grey[400],   // Lighter grey for secondary text
+                    primary: grey[100],
+                    secondary: grey[400],
                 },
-                divider: blueGrey[700],   // Divider matching the blueGrey theme (#455a64)
+                divider: blueGrey[700],
                 success: {
-                    main: green[400],     // Lighter green
+                    main: green[400],
                     light: green[300],
                     dark: green[600],
                     contrastText: 'rgba(0, 0, 0, 0.87)',
                 },
                 error: {
-                    main: red[400],       // Lighter red
+                    main: red[400],
                     light: red[300],
                     dark: red[600],
                     contrastText: '#ffffff',
                 },
                 warning: {
-                    main: amber[400],     // Lighter amber/orange
+                    main: amber[400],
                     light: amber[300],
                     dark: amber[600],
                     contrastText: 'rgba(0, 0, 0, 0.87)',
                 },
                 info: {
-                    main: lightBlue[400], // Lighter info blue
+                    main: lightBlue[400],
                     light: lightBlue[300],
                     dark: lightBlue[600],
                     contrastText: 'rgba(0, 0, 0, 0.87)',
                 },
                 action: {
-                    hover: 'rgba(255, 255, 255, 0.08)', // Standard dark hover
-                    selected: 'rgba(255, 255, 255, 0.16)',// Standard dark selected
+                    hover: 'rgba(255, 255, 255, 0.08)',
+                    selected: 'rgba(255, 255, 255, 0.16)',
                     disabledBackground: 'rgba(255, 255, 255, 0.12)',
                     disabled: 'rgba(255, 255, 255, 0.3)',
                 }
@@ -121,18 +121,18 @@ const getDesignTokens = (mode) => ({
     },
     typography: {
         fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-        // Keep typography consistent or adjust H tags if needed
+
         h4: {
             fontWeight: 600,
-            color: mode === 'light' ? blue[800] : blue[200], // Lighter blue for dark H4
+            color: mode === 'light' ? blue[800] : blue[200],
         },
         h5: {
             fontWeight: 600,
-            color: mode === 'light' ? blue[800] : blue[200], // Lighter blue for dark H5
+            color: mode === 'light' ? blue[800] : blue[200],
         },
         h6: {
             fontWeight: 500,
-            color: mode === 'light' ? blue[900] : blue[100], // Lighter blue for dark H6
+            color: mode === 'light' ? blue[900] : blue[100],
         },
         button: {
             textTransform: 'none',
@@ -143,7 +143,7 @@ const getDesignTokens = (mode) => ({
             fontSize: '0.85rem',
         },
         caption: {
-            color: mode === 'light' ? grey[600] : grey[500], // Slightly brighter caption in dark
+            color: mode === 'light' ? grey[600] : grey[500],
         }
     },
     shape: {
@@ -182,7 +182,7 @@ const getDesignTokens = (mode) => ({
                     // More prominent shadow for cards in dark mode
                     boxShadow: themeParam.palette.mode === 'light'
                         ? '0 1px 3px rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.06)'
-                        : '0 3px 6px rgba(0,0,0,0.2), 0 5px 12px rgba(0,0,0,0.25)', // Adjusted dark shadow
+                        : '0 3px 6px rgba(0,0,0,0.2), 0 5px 12px rgba(0,0,0,0.25)',
                     borderRadius: themeParam.shape.borderRadius,
                     border: `1px solid ${themeParam.palette.divider}`,
                     backgroundColor: themeParam.palette.background.paper,
@@ -193,8 +193,7 @@ const getDesignTokens = (mode) => ({
                     '&:hover': {
                         boxShadow: themeParam.palette.mode === 'light'
                             ? '0 4px 8px rgba(0,0,0,0.07), 0 5px 15px rgba(0,0,0,0.08)'
-                            : '0 6px 12px rgba(0,0,0,0.25), 0 10px 20px rgba(0,0,0,0.3)', // Enhanced dark hover shadow
-                        // transform: 'translateY(-3px)' // Keep hover effect
+                            : '0 6px 12px rgba(0,0,0,0.25), 0 10px 20px rgba(0,0,0,0.3)',
                     },
                     display: 'flex',
                     flexDirection: 'column',
@@ -209,7 +208,6 @@ const getDesignTokens = (mode) => ({
                     borderBottom: `1px solid ${themeParam.palette.divider}`,
                     transition: 'border-color 0.3s ease-in-out',
                 }),
-                // Rely on theme text colors (primary/secondary) which are already adapted
                 title: ({ theme: themeParam }) => ({
                     fontSize: '1.15rem',
                     lineHeight: 1.3,
@@ -226,17 +224,15 @@ const getDesignTokens = (mode) => ({
         },
         MuiCardContent: {
             styleOverrides: {
-                // Make the collapsed section background slightly different from card background
                 root: ({ theme: themeParam, ownerState }) => ({
                     padding: '16px',
-                    flexGrow: ownerState?.className?.includes('MuiCollapse-root') ? 0 : 1, // Don't grow if in collapse
+                    flexGrow: ownerState?.className?.includes('MuiCollapse-root') ? 0 : 1,
                     color: themeParam.palette.text.secondary,
                     transition: 'color 0.3s ease-in-out, background-color 0.3s ease-in-out',
-                    // Apply specific background only if directly inside a Collapse (like comments/tags section)
                     ...(ownerState?.className?.includes('MuiCollapse-root') && {
                         backgroundColor: themeParam.palette.mode === 'light'
                             ? themeParam.palette.grey[100]
-                            : themeParam.palette.background.default, // Use default body bg for contrast
+                            : themeParam.palette.background.default,
                         paddingTop: '12px',
                         paddingBottom: '12px',
                     }),
@@ -259,14 +255,12 @@ const getDesignTokens = (mode) => ({
                     borderRadius: themeParam.shape.borderRadius,
                     padding: '8px 16px',
                 }),
-                // Adjust hover colors for the new dark palette
                 containedPrimary: ({ theme: themeParam }) => ({
-                    // Use contrastText color defined in the dark primary palette
                     color: themeParam.palette.primary.contrastText,
                     '&:hover': {
                         backgroundColor: themeParam.palette.mode === 'light'
                             ? themeParam.palette.primary.dark
-                            : themeParam.palette.primary.light, // Use light variant for dark hover
+                            : themeParam.palette.primary.light,
                         boxShadow: 'none',
                     }
                 }),
@@ -275,12 +269,11 @@ const getDesignTokens = (mode) => ({
                     '&:hover': {
                         backgroundColor: themeParam.palette.mode === 'light'
                             ? themeParam.palette.secondary.dark
-                            : themeParam.palette.secondary.light, // Use light variant for dark hover
+                            : themeParam.palette.secondary.light,
                         boxShadow: 'none',
                     }
                 }),
                 outlinedSecondary: ({ theme: themeParam }) => ({
-                    // Use main color for border and text in dark mode outlined
                     borderColor: themeParam.palette.mode === 'light'
                         ? themeParam.palette.secondary.light
                         : themeParam.palette.secondary.main,
@@ -289,7 +282,7 @@ const getDesignTokens = (mode) => ({
                         backgroundColor: themeParam.palette.action.hover,
                         borderColor: themeParam.palette.mode === 'light'
                             ? themeParam.palette.secondary.main
-                            : themeParam.palette.secondary.light, // Slightly lighter border on hover
+                            : themeParam.palette.secondary.light,
                     }
                 })
             }
@@ -297,22 +290,20 @@ const getDesignTokens = (mode) => ({
         MuiIconButton: {
             styleOverrides: {
                 root: ({ theme: themeParam }) => ({
-                    color: themeParam.palette.text.secondary, // Default icon color adapts
+                    color: themeParam.palette.text.secondary,
                     transition: 'color 0.2s ease-in-out, background-color 0.2s ease-in-out',
                     '&:hover': {
                         backgroundColor: themeParam.palette.action.hover,
                     },
-                    // Ensure explicit colors work with new palette
                     '&.MuiIconButton-colorPrimary': {
                         color: themeParam.palette.primary.main,
                     },
                     '&.MuiIconButton-colorSecondary': {
                         color: themeParam.palette.secondary.main,
                     },
-                    // Style for header theme toggle button
                     '&.theme-toggle-button': {
-                        color: themeParam.palette.text.primary, // Use primary text color
-                        backgroundColor: 'rgba(120, 120, 120, 0.1)', // Subtle background
+                        color: themeParam.palette.text.primary,
+                        backgroundColor: 'rgba(120, 120, 120, 0.1)',
                         '&:hover': {
                             backgroundColor: 'rgba(120, 120, 120, 0.2)',
                         }
@@ -323,7 +314,7 @@ const getDesignTokens = (mode) => ({
         MuiTooltip: {
             styleOverrides: {
                 tooltip: ({ theme: themeParam }) => ({
-                    backgroundColor: themeParam.palette.mode === 'light' ? themeParam.palette.grey[700] : blueGrey[600], // Use blueGrey for dark tooltip
+                    backgroundColor: themeParam.palette.mode === 'light' ? themeParam.palette.grey[700] : blueGrey[600],
                     fontSize: '0.8rem',
                     padding: '4px 8px',
                 }),
@@ -340,16 +331,14 @@ const getDesignTokens = (mode) => ({
                     borderRadius: '6px',
                     transition: 'background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out',
                 },
-                // Outlined chips adapt better with the new dark palette
                 outlinedPrimary: ({ theme: themeParam }) => ({
-                    color: themeParam.palette.primary.main, // Use main color for text
-                    borderColor: themeParam.palette.primary.main + '80', // Use main color with alpha for border
-                    backgroundColor: themeParam.palette.primary.main + '1A', // Very subtle background tint
+                    color: themeParam.palette.primary.main,
+                    borderColor: themeParam.palette.primary.main + '80',
+                    backgroundColor: themeParam.palette.primary.main + '1A',
                     '&:hover, &:focus': {
-                        backgroundColor: themeParam.palette.primary.main + '33', // Slightly more visible on hover
+                        backgroundColor: themeParam.palette.primary.main + '33',
                     },
                 }),
-                // Filled chips use main colors
                 filledPrimary: ({ theme: themeParam }) => ({
                     backgroundColor: themeParam.palette.primary.main,
                     color: themeParam.palette.primary.contrastText,
@@ -377,13 +366,13 @@ const getDesignTokens = (mode) => ({
                             transition: 'border-color 0.3s ease-in-out',
                         },
                         '&.Mui-focused fieldset': {
-                            borderColor: themeParam.palette.primary.main, // Use new primary color
+                            borderColor: themeParam.palette.primary.main,
                             borderWidth: '1px',
                         },
                         '&:hover fieldset': {
                             borderColor: themeParam.palette.mode === 'light'
                                 ? themeParam.palette.primary.light
-                                : themeParam.palette.primary.main, // Use main on hover in dark
+                                : themeParam.palette.primary.main,
                         },
                     },
                     // Labels and helper text adapt via theme text colors
@@ -397,10 +386,9 @@ const getDesignTokens = (mode) => ({
         MuiDialogTitle: {
             styleOverrides: {
                 root: ({ theme: themeParam }) => ({
-                    // Use paper background for title, rely on border for separation
                     backgroundColor: themeParam.palette.background.paper,
                     color: themeParam.palette.text.primary,
-                    padding: '16px 24px', // Standard padding
+                    padding: '16px 24px',
                     borderBottom: `1px solid ${themeParam.palette.divider}`,
                     transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-color 0.3s ease-in-out',
                 })
@@ -410,7 +398,7 @@ const getDesignTokens = (mode) => ({
             styleOverrides: {
                 root: ({ theme: themeParam }) => ({
                     padding: '16px 24px',
-                    backgroundColor: themeParam.palette.background.paper, // Use paper background
+                    backgroundColor: themeParam.palette.background.paper,
                     borderTop: `1px solid ${themeParam.palette.divider}`,
                     transition: 'background-color 0.3s ease-in-out, border-color 0.3s ease-in-out',
                 })
@@ -419,7 +407,7 @@ const getDesignTokens = (mode) => ({
         MuiListItem: {
             styleOverrides: {
                 root: ({ theme: themeParam }) => ({
-                    paddingTop: 6, // Slightly more padding
+                    paddingTop: 6,
                     paddingBottom: 6,
                     alignItems: 'flex-start',
                     transition: 'background-color 0.3s ease-in-out',
@@ -428,7 +416,6 @@ const getDesignTokens = (mode) => ({
                         backgroundColor: themeParam.palette.action.selected,
                         '&:hover': { backgroundColor: themeParam.palette.action.hover },
                     },
-                    // Ensure divider inside list item adapts
                     '&.MuiDivider-root': {
                         borderColor: themeParam.palette.divider,
                     }
@@ -437,7 +424,6 @@ const getDesignTokens = (mode) => ({
         },
         MuiListItemText: {
             styleOverrides: {
-                // Rely on theme text colors which adapt
                 root: ({ theme: themeParam }) => ({
                     marginTop: 0,
                     marginBottom: 0,
@@ -448,33 +434,31 @@ const getDesignTokens = (mode) => ({
         },
         MuiAlert: {
             styleOverrides: {
-                // Use filled variant look for standard alerts in dark mode for better contrast
                 root: ({ theme: themeParam, ownerState }) => ({
                     borderRadius: themeParam.shape.borderRadius,
-                    border: `1px solid ${themeParam.palette[ownerState.severity || 'info'].main + '4D'}`, // Subtle border
-                    color: themeParam.palette.getContrastText(themeParam.palette[ownerState.severity || 'info'].main), // Ensure text contrast
+                    border: `1px solid ${themeParam.palette[ownerState.severity || 'info'].main + '4D'}`,
+                    color: themeParam.palette.getContrastText(themeParam.palette[ownerState.severity || 'info'].main),
                     backgroundColor: themeParam.palette.mode === 'light'
-                        ? themeParam.palette[ownerState.severity || 'info'].light + '33' // Light mode subtle bg
-                        : themeParam.palette[ownerState.severity || 'info'].dark + '59', // Dark mode uses darker bg tint
+                        ? themeParam.palette[ownerState.severity || 'info'].light + '33'
+                        : themeParam.palette[ownerState.severity || 'info'].dark + '59',
                     transition: 'background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out',
                     '& .MuiAlert-icon': {
-                        color: themeParam.palette[ownerState.severity || 'info'].main, // Icon uses main severity color
-                        opacity: themeParam.palette.mode === 'light' ? 0.9 : 1, // Full opacity icon in dark mode
+                        color: themeParam.palette[ownerState.severity || 'info'].main,
+                        opacity: themeParam.palette.mode === 'light' ? 0.9 : 1,
                         transition: 'color 0.3s ease-in-out',
                     },
                 }),
-                // No need for specific standardWarning, standardError etc. if root handles severity dynamically
             }
         },
         MuiAutocomplete: {
             styleOverrides: {
                 paper: ({ theme: themeParam }) => ({
                     boxShadow: themeParam.shadows[4],
-                    backgroundColor: themeParam.palette.background.paper, // Adapts via theme
+                    backgroundColor: themeParam.palette.background.paper,
                     transition: 'background-color 0.3s ease-in-out',
                 }),
                 option: ({ theme: themeParam }) => ({
-                    color: themeParam.palette.text.primary, // Adapts via theme
+                    color: themeParam.palette.text.primary,
                     transition: 'background-color 0.2s ease-in-out, color 0.3s ease-in-out',
                     '&[aria-selected="true"]': { backgroundColor: themeParam.palette.action.selected },
                     '&:hover': { backgroundColor: themeParam.palette.action.hover }
@@ -489,10 +473,8 @@ function App() {
     const [editingArticle, setEditingArticle] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [refreshFlag, setRefreshFlag] = useState(false);
-    // Default to dark mode
     const [mode, setMode] = useState('dark');
 
-    // Create theme based on mode
     const theme = useMemo(() => {
         let createdTheme = createTheme(getDesignTokens(mode));
         createdTheme = responsiveFontSizes(createdTheme);
@@ -527,7 +509,6 @@ function App() {
         window.scrollTo(0, 0);
     };
 
-    // Toggle dark/light mode
     const toggleColorMode = () => {
         setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
     };
