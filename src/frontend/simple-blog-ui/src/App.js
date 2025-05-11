@@ -4,9 +4,8 @@ import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/s
 import ArticleList from './ArticleList';
 import ArticleForm from './ArticleForm';
 import AddIcon from '@mui/icons-material/Add';
-import Brightness4Icon from '@mui/icons-material/Brightness4'; // Moon icon
-import Brightness7Icon from '@mui/icons-material/Brightness7'; // Sun icon
-// Import specific color palettes needed
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { blue, pink, grey, red, green, amber, lightBlue, blueGrey } from '@mui/material/colors';
 
 // --- Theme Definition Function ---
@@ -155,7 +154,6 @@ const getDesignTokens = (mode) => ({
             styleOverrides: (themeParam) => (`
             body {
               background-color: ${themeParam.palette.background.default};
-              /* Updated Gradient Background */
               background-image: linear-gradient(to bottom, ${themeParam.palette.mode === 'light' ? themeParam.palette.primary.main + '1A' : themeParam.palette.primary.dark + '33'}, ${themeParam.palette.background.default} 50%);
               margin: 0;
               padding: 0;
@@ -171,7 +169,6 @@ const getDesignTokens = (mode) => ({
                     backgroundColor: themeParam.palette.background.paper,
                     backgroundImage: 'none',
                     transition: 'background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-                    // Slightly different shadow elevation for dark mode paper
                     boxShadow: themeParam.palette.mode === 'dark' ? themeParam.shadows[2] : themeParam.shadows[2],
                 }),
             }
@@ -179,7 +176,6 @@ const getDesignTokens = (mode) => ({
         MuiCard: {
             styleOverrides: {
                 root: ({ theme: themeParam }) => ({
-                    // More prominent shadow for cards in dark mode
                     boxShadow: themeParam.palette.mode === 'light'
                         ? '0 1px 3px rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.06)'
                         : '0 3px 6px rgba(0,0,0,0.2), 0 5px 12px rgba(0,0,0,0.25)',
@@ -187,7 +183,6 @@ const getDesignTokens = (mode) => ({
                     border: `1px solid ${themeParam.palette.divider}`,
                     backgroundColor: themeParam.palette.background.paper,
                     backgroundImage: 'none',
-                    // Use the new lighter primary color for border in dark mode
                     borderLeft: `4px solid ${themeParam.palette.primary.main}`,
                     transition: 'box-shadow 0.3s ease-in-out, transform 0.2s ease-out, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out',
                     '&:hover': {
@@ -204,10 +199,10 @@ const getDesignTokens = (mode) => ({
         MuiCardHeader: {
             styleOverrides: {
                 root: ({ theme: themeParam }) => ({
-                    padding: '16px 16px 8px 16px',
-                    borderBottom: `1px solid ${themeParam.palette.divider}`,
-                    transition: 'border-color 0.3s ease-in-out',
-                }),
+                        padding: '16px 16px 8px 16px',
+                        borderBottom: `1px solid ${themeParam.palette.divider}`,
+                        transition: 'border-color 0.3s ease-in-out',}
+                ),
                 title: ({ theme: themeParam }) => ({
                     fontSize: '1.15rem',
                     lineHeight: 1.3,
@@ -226,15 +221,17 @@ const getDesignTokens = (mode) => ({
             styleOverrides: {
                 root: ({ theme: themeParam, ownerState }) => ({
                     padding: '16px',
+                    borderBottom: ownerState?.className?.includes('MuiCollapse-root') ? 'none' : `1px dashed ${themeParam.palette.divider}`,
                     flexGrow: ownerState?.className?.includes('MuiCollapse-root') ? 0 : 1,
                     color: themeParam.palette.text.secondary,
-                    transition: 'color 0.3s ease-in-out, background-color 0.3s ease-in-out',
+                    transition: 'color 0.3s ease-in-out, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out',
                     ...(ownerState?.className?.includes('MuiCollapse-root') && {
                         backgroundColor: themeParam.palette.mode === 'light'
                             ? themeParam.palette.grey[100]
                             : themeParam.palette.background.default,
                         paddingTop: '12px',
                         paddingBottom: '12px',
+                        borderBottom: 'none',
                     }),
                 }),
             }
@@ -244,7 +241,6 @@ const getDesignTokens = (mode) => ({
                 root: ({ theme: themeParam }) => ({
                     padding: '8px 16px',
                     marginTop: 'auto',
-                    borderTop: `1px dashed ${themeParam.palette.divider}`,
                     transition: 'border-color 0.3s ease-in-out',
                 })
             }
@@ -375,7 +371,6 @@ const getDesignTokens = (mode) => ({
                                 : themeParam.palette.primary.main,
                         },
                     },
-                    // Labels and helper text adapt via theme text colors
                     '& label': { color: themeParam.palette.text.secondary, transition: 'color 0.3s ease-in-out' },
                     '& label.Mui-focused': { color: themeParam.palette.primary.main },
                     '& .MuiFormHelperText-root': { color: themeParam.palette.text.secondary, marginLeft: 2, transition: 'color 0.3s ease-in-out' },
@@ -470,18 +465,20 @@ const getDesignTokens = (mode) => ({
 
 // --- Основной компонент приложения ---
 function App() {
+    // --- State ---
     const [editingArticle, setEditingArticle] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [refreshFlag, setRefreshFlag] = useState(false);
     const [mode, setMode] = useState('dark');
 
+    // --- Theme Memoization ---
     const theme = useMemo(() => {
         let createdTheme = createTheme(getDesignTokens(mode));
         createdTheme = responsiveFontSizes(createdTheme);
         return createdTheme;
     }, [mode]);
 
-
+    // --- Handlers ---
     const handleEdit = (article) => {
         setEditingArticle(article);
         setShowForm(true);
@@ -513,10 +510,9 @@ function App() {
         setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
     };
 
-
+    // --- Render Logic ---
     return (
         <ThemeProvider theme={theme}>
-            {/* CssBaseline applies background, text color, etc. based on theme */}
             <CssBaseline enableColorScheme />
             <Container
                 maxWidth="lg"
@@ -540,17 +536,16 @@ function App() {
                         transition: 'border-color 0.3s ease-in-out',
                     }}
                 >
-                    {/* Title adapts color via theme */}
                     <Typography variant="h4" component="h1" sx={{ transition: 'color 0.3s ease-in-out' }}>
                         Статьи и Обсуждения
                     </Typography>
 
-                    {/* Right Aligned Actions */}
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}> {/* Increased gap */}
+                    {/* --- Right Aligned Actions --- */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                         {!showForm && (
                             <Button
                                 variant="contained"
-                                color="primary" // Uses primary color from theme
+                                color="primary"
                                 startIcon={<AddIcon />}
                                 onClick={handleAddNew}
                                 sx={{ boxShadow: 1 }}
@@ -558,12 +553,12 @@ function App() {
                                 Добавить статью
                             </Button>
                         )}
-                        {/* Theme Toggle Button */}
+                        {/* --- Theme Toggle Button --- */}
                         <Tooltip title={mode === 'dark' ? "Светлый режим" : "Темный режим"} arrow>
                             <IconButton
                                 onClick={toggleColorMode}
                                 color="inherit"
-                                className="theme-toggle-button" // Added class for specific styling via overrides
+                                className="theme-toggle-button"
                                 aria-label="toggle theme"
                             >
                                 {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
@@ -573,7 +568,7 @@ function App() {
                 </Box>
 
                 {/* --- Main Content Area --- */}
-                <Paper sx={{ // Use Paper overrides for bg, shadow etc.
+                <Paper sx={{
                     p: { xs: 2, sm: 3, md: 4 },
                     borderRadius: theme.shape.borderRadius,
                 }}>

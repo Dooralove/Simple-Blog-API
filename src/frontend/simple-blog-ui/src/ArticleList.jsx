@@ -25,6 +25,7 @@ import {
     Tooltip,
     useTheme,
     Fade,
+    Divider,
 } from "@mui/material";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
@@ -34,9 +35,16 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import TagIcon from "@mui/icons-material/Tag";
+// --- Иконки соцсетей ---
+import GitHubIcon from "@mui/icons-material/GitHub";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import TwitterIcon from "@mui/icons-material/Twitter";
 
+// --- Component Definition ---
 const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
     const theme = useTheme();
+
+    // --- State ---
     const [articles, setArticles] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -58,7 +66,7 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
     const handleToggleComments = async (articleId) => {
         const willBeOpen = !openCommentsMap[articleId];
         setOpenCommentsMap((prev) => ({ ...prev, [articleId]: willBeOpen }));
-        if (willBeOpen && !commentsMap.hasOwnProperty(articleId)) {
+        if (willBeOpen && commentsMap[articleId] === undefined) {
             await fetchComments(articleId);
         }
     };
@@ -66,7 +74,7 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
     const handleToggleTags = async (articleId) => {
         const willBeOpen = !openTagsMap[articleId];
         setOpenTagsMap((prev) => ({ ...prev, [articleId]: willBeOpen }));
-        if (willBeOpen && !tagsMap.hasOwnProperty(articleId)) {
+        if (willBeOpen && tagsMap[articleId] === undefined) {
             await fetchTags(articleId);
         }
     };
@@ -79,6 +87,10 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
             const response = await axios.get("http://localhost:8080/articles/all");
             const sortedArticles = response.data.sort((a, b) => b.id - a.id);
             setArticles(sortedArticles);
+            setOpenCommentsMap({});
+            setOpenTagsMap({});
+            setCommentsMap({});
+            setTagsMap({});
         } catch (err) {
             console.error("Error fetching articles:", err);
             setError(
@@ -137,7 +149,8 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
         actionUrl,
         method = "post",
         successMessage,
-        errorMessage
+        errorMessage,
+        articleId
     ) => {
         try {
             await axios({ method, url: actionUrl });
@@ -182,10 +195,9 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
     };
 
     // --- Dialog Handlers ---
-    // Comments Dialog
     const handleOpenCommentDialog = (articleId) => {
         setCurrentArticleId(articleId);
-        setCommentText(""); // Clear previous text
+        setCommentText("");
         setOpenCommentDialog(true);
     };
     const handleCloseCommentDialog = () => setOpenCommentDialog(false);
@@ -209,12 +221,11 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
         }
     };
 
-    // Tags Dialog
     const handleOpenTagDialog = (articleId) => {
         setCurrentArticleId(articleId);
-        setSelectedTag(null); // Reset selection
+        setSelectedTag(null);
         setOpenTagDialog(true);
-        if (!tagsMap.hasOwnProperty(articleId)) {
+        if (tagsMap[articleId] === undefined) {
             fetchTags(articleId);
         }
         if (!allTags.length) {
@@ -254,65 +265,64 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
         return <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>;
     }
 
+    const authorInfo = {
+        name: "DO0RA",
+        bio: "веб-сервис для публикации статей",
+        socials: {
+            github: "https://github.com/your-github-username",
+            linkedin: "https://linkedin.com/in/your-linkedin-profile",
+            twitter: "https://twitter.com/your-twitter-handle",
+        },
+    };
+
     return (
         <>
-            {/* Display non-critical errors above the list */}
             {error && (
                 <Alert severity="warning" sx={{ mb: 2 }}>
                     {error}
                 </Alert>
             )}
 
+            {/* --- Grid for Articles --- */}
             <Grid container spacing={3}>
-                {/* Message if list is empty */}
                 {articles.length === 0 && !isLoading && (
                     <Grid item xs={12}>
                         <Typography variant="h6" color="text.secondary" align="center" sx={{ mt: 4 }}>
-                            No articles yet. Add the first one!
+                            Статей пока нет. Добавьте первую!
                         </Typography>
                     </Grid>
                 )}
 
-                {/* Map through articles and render a Card for each */}
                 {articles.map((article) => {
-                    // Determine if comments/tags sections are open for this article
                     const isCommentsOpen = !!openCommentsMap[article.id];
                     const isTagsOpen = !!openTagsMap[article.id];
-                    // Get cached comments/tags for this article
                     const comments = commentsMap[article.id];
                     const tags = tagsMap[article.id];
 
                     return (
                         <Grid item xs={12} sm={6} md={4} key={article.id}>
-                            {/* Fade in animation */}
                             <Fade in timeout={600}>
-                                {/* Card styling is primarily handled by theme overrides in App.js */}
                                 <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                                    {/* CardHeader uses theme overrides */}
                                     <CardHeader
                                         title={<Typography variant="h6" component="h3">{article.title}</Typography>}
                                         subheader={
                                             <>
-                                                <Typography variant="caption" color="text.secondary">ID: {article.id} • </Typography>
-                                                {/* Use theme colors for success/error */}
-                                                <Typography component="span" variant="caption" sx={{ color: theme.palette.success.main }}>
+                                                <Typography component="span" variant="caption" sx={{ color: theme.palette.success.main, fontWeight: 'bold' }}>
                                                     👍 {article.likes || 0}
                                                 </Typography>
-                                                <Typography component="span" variant="caption" sx={{ ml: 1, color: theme.palette.error.main }}>
+                                                <Typography component="span" variant="caption" sx={{ ml: 1, color: theme.palette.error.main, fontWeight: 'bold' }}>
                                                     👎 {article.dislikes || 0}
                                                 </Typography>
                                             </>
                                         }
                                         action={
                                             <>
-                                                <Tooltip title="Edit" arrow>
-                                                    {/* Use theme secondary color */}
+                                                <Tooltip title="Редактировать" arrow>
                                                     <IconButton onClick={() => onEdit(article)} size="small" color="secondary">
                                                         <EditIcon fontSize="inherit" />
                                                     </IconButton>
                                                 </Tooltip>
-                                                <Tooltip title="Delete" arrow>
-                                                    {/* Use theme error color */}
+                                                <Tooltip title="Удалить" arrow>
                                                     <IconButton onClick={() => handleDeleteArticle(article.id)} size="small" sx={{ color: theme.palette.error.main }}>
                                                         <DeleteIcon fontSize="inherit" />
                                                     </IconButton>
@@ -320,49 +330,43 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
                                             </>
                                         }
                                     />
-                                    {/* CardContent uses theme overrides */}
                                     <CardContent sx={{ flexGrow: 1 }}>
                                         <Typography variant="body2" color="text.secondary">
                                             {article.content.length > 150 ? `${article.content.substring(0, 150)}...` : article.content}
                                         </Typography>
                                     </CardContent>
-                                    {/* CardActions uses theme overrides (including top border) */}
-                                    <CardActions disableSpacing sx={{ justifyContent: 'space-between', flexWrap: 'wrap', p: 1 }}>
-                                        {/* Left Actions (Like, Dislike, Add Comment/Tag) */}
+                                    <CardActions disableSpacing sx={{ borderTop: `1px solid ${theme.palette.divider}`, justifyContent: 'space-between', flexWrap: 'wrap', p: 1 }}>
+                                        {/* --- Left Actions --- */}
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexWrap: 'wrap' }}>
-                                            <Tooltip title="Like" arrow>
+                                            <Tooltip title="Нравится" arrow>
                                                 <IconButton onClick={() => handleLike(article.id)} size="small" sx={{ color: theme.palette.success.main }}>
                                                     <ThumbUpAltIcon fontSize="small" />
                                                 </IconButton>
                                             </Tooltip>
-                                            <Tooltip title="Dislike" arrow>
+                                            <Tooltip title="Не нравится" arrow>
                                                 <IconButton onClick={() => handleDislike(article.id)} size="small" sx={{ color: theme.palette.error.main }}>
                                                     <ThumbDownAltIcon fontSize="small" />
                                                 </IconButton>
                                             </Tooltip>
-                                            <Tooltip title="Add Comment" arrow>
-                                                {/* Use theme primary color */}
+                                            <Tooltip title="Добавить комментарий" arrow>
                                                 <IconButton onClick={() => handleOpenCommentDialog(article.id)} size="small" color="primary">
                                                     <AddCommentIcon fontSize="small" />
                                                 </IconButton>
                                             </Tooltip>
-                                            <Tooltip title="Add Tag" arrow>
-                                                {/* Use theme primary color */}
+                                            <Tooltip title="Добавить тег" arrow>
                                                 <IconButton onClick={() => handleOpenTagDialog(article.id)} size="small" color="primary">
                                                     <LabelIcon fontSize="small" />
                                                 </IconButton>
                                             </Tooltip>
                                         </Box>
-                                        {/* Right Actions (Toggle Comments/Tags) */}
+                                        {/* --- Right Actions --- */}
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                            <Tooltip title={isCommentsOpen ? "Hide Comments" : "Show Comments"} arrow>
-                                                {/* Color changes based on open state */}
+                                            <Tooltip title={isCommentsOpen ? "Скрыть комментарии" : "Показать комментарии"} arrow>
                                                 <IconButton onClick={() => handleToggleComments(article.id)} size="small" sx={{ color: isCommentsOpen ? theme.palette.primary.main : theme.palette.text.secondary }}>
                                                     <CommentIcon fontSize="small" />
                                                 </IconButton>
                                             </Tooltip>
-                                            <Tooltip title={isTagsOpen ? "Hide Tags" : "Show Tags"} arrow>
-                                                {/* Color changes based on open state */}
+                                            <Tooltip title={isTagsOpen ? "Скрыть теги" : "Показать теги"} arrow>
                                                 <IconButton onClick={() => handleToggleTags(article.id)} size="small" sx={{ color: isTagsOpen ? theme.palette.primary.main : theme.palette.text.secondary }}>
                                                     <TagIcon fontSize="small" />
                                                 </IconButton>
@@ -370,76 +374,55 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
                                         </Box>
                                     </CardActions>
 
-                                    {/* --- Comments Section (Collapsible) --- */}
+                                    {/* --- Comments Section --- */}
                                     <Collapse in={isCommentsOpen} timeout="auto" unmountOnExit>
-                                        {/* CardContent here RELIES ON THEME OVERRIDE for background color */}
-                                        {/* NO bgcolor property set directly in sx */}
-                                        <CardContent sx={{
-                                            pt: 1.5, // Use padding from theme override or set custom
-                                            pb: 1.5,
-                                            transition: 'background-color 0.3s ease-in-out', // Optional: smooth bg transition
-                                            // className='MuiCollapse-root' // MUI adds classes automatically
-                                        }}>
+                                        <CardContent sx={{ pt: 1.5, pb: 1.5, bgcolor: theme.palette.action.hover }}>
                                             <Typography variant="subtitle2" gutterBottom sx={{ color: theme.palette.text.primary, fontWeight: "medium", mb: 1 }}>
-                                                Comments:
+                                                Комментарии:
                                             </Typography>
-                                            {/* Loading indicator */}
-                                            {comments === undefined && (
-                                                <Box sx={{ display: 'flex', justifyContent: 'center', p: 1 }}>
-                                                    <CircularProgress size={20} color="secondary" />
-                                                </Box>
-                                            )}
-                                            {/* List of comments */}
-                                            {comments && comments.length > 0 && (
-                                                <List dense disablePadding sx={{ pl: 1 }}>
-                                                    {comments.map((comment) => (
-                                                        <ListItem key={comment.id} disableGutters divider sx={{ pt: 0.5, pb: 0.5, borderColor: theme.palette.divider }}>
-                                                            <ListItemText
-                                                                primary={<Typography variant="body2" color="text.primary">{comment.content}</Typography>}
-                                                                // You could add secondary text e.g., for timestamp
-                                                            />
-                                                        </ListItem>
-                                                    ))}
-                                                </List>
-                                            )}
-                                            {/* Message if no comments */}
-                                            {comments && comments.length === 0 && (
-                                                <Typography variant="caption" color="text.secondary" sx={{ pl: 1 }}>No comments yet.</Typography>
-                                            )}
+                                            <Box sx={{ opacity: comments === undefined ? 0.5 : 1 }}>
+                                                {comments === undefined && (
+                                                    <Box sx={{ display: 'flex', justifyContent: 'center', p: 1 }}><CircularProgress size={20} color="secondary" /></Box>
+                                                )}
+                                                {comments && comments.length > 0 && (
+                                                    <List dense disablePadding sx={{ pl: 1 }}>
+                                                        {comments.map((comment) => (
+                                                            <ListItem key={comment.id} disableGutters divider sx={{ pt: 0.5, pb: 0.5, borderColor: theme.palette.divider }}>
+                                                                <ListItemText
+                                                                    primary={<Typography variant="body2" color="text.primary">{comment.content}</Typography>}
+                                                                />
+                                                            </ListItem>
+                                                        ))}
+                                                    </List>
+                                                )}
+                                                {comments && comments.length === 0 && (
+                                                    <Typography variant="caption" color="text.secondary" sx={{ pl: 1 }}>Комментариев пока нет.</Typography>
+                                                )}
+                                            </Box>
                                         </CardContent>
                                     </Collapse>
 
-                                    {/* --- Tags Section (Collapsible) --- */}
+                                    {/* --- Tags Section --- */}
                                     <Collapse in={isTagsOpen} timeout="auto" unmountOnExit>
-                                        {/* CardContent here RELIES ON THEME OVERRIDE for background color */}
-                                        {/* NO bgcolor property set directly in sx */}
-                                        <CardContent sx={{
-                                            pt: 1.5,
-                                            pb: 1.5,
-                                            transition: 'background-color 0.3s ease-in-out',
-                                        }}>
+                                        <CardContent sx={{ pt: 1.5, pb: 1.5, bgcolor: theme.palette.action.hover }}>
                                             <Typography variant="subtitle2" gutterBottom sx={{ color: theme.palette.text.primary, fontWeight: "medium", mb: 1 }}>
-                                                Tags:
+                                                Теги:
                                             </Typography>
-                                            {/* Loading indicator */}
-                                            {tags === undefined && (
-                                                <Box sx={{ display: 'flex', justifyContent: 'center', p: 1 }}>
-                                                    <CircularProgress size={20} color="secondary" />
-                                                </Box>
-                                            )}
-                                            {/* List of tags as Chips */}
-                                            {tags && tags.length > 0 && (
-                                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, pl: 1 }}>
-                                                    {tags.map((tag) => (
-                                                        // Chip appearance is controlled by theme overrides
-                                                        <Chip key={tag.id} label={tag.name} size="small" variant="outlined" color="primary" />
-                                                    ))}
-                                                </Box>
-                                            )}
-                                            {/* Message if no tags */}
-                                            {tags && tags.length === 0 && (
-                                                <Typography variant="caption" color="text.secondary" sx={{ pl: 1 }}>No tags assigned.</Typography>
-                                            )}
+                                            <Box sx={{ opacity: tags === undefined ? 0.5 : 1 }}>
+                                                {tags === undefined && (
+                                                    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', p: 2, opacity: 0.5 }}><CircularProgress size={25} /></Box>
+                                                )}
+                                                {tags && tags.length > 0 && (
+                                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, pl: 1 }}>
+                                                        {tags.map((tag) => (
+                                                            <Chip key={tag.id} label={tag.name} size="small" variant="outlined" color="primary" />
+                                                        ))}
+                                                    </Box>
+                                                )}
+                                                {tags && tags.length === 0 && (
+                                                    <Typography variant="caption" color="text.secondary" sx={{ pl: 1 }}>Теги не назначены.</Typography>
+                                                )}
+                                            </Box>
                                         </CardContent>
                                     </Collapse>
                                 </Card>
@@ -448,38 +431,112 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
                     );
                 })}
             </Grid>
+            {/* --- КОНЕЦ СЕТКИ СТАТЕЙ --- */}
+
+            {/* --- СЕКЦИЯ АВТОРА --- */}
+            {articles.length > 0 && (
+                <Box
+                    sx={{
+                        mt: 6,
+                        p: 3,
+                        textAlign: 'center',
+                        borderTop: `1px solid ${theme.palette.divider}`,
+                    }}
+                >
+                    <Typography variant="h6" component="h3" gutterBottom>
+                        {authorInfo.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        {authorInfo.bio}
+                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1.5 }}>
+                        {authorInfo.socials.github && (
+                            <Tooltip title="GitHub" arrow>
+                                <IconButton
+                                    component="a"
+                                    href={authorInfo.socials.github}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="GitHub profile"
+                                    color="inherit"
+                                >
+                                    <GitHubIcon />
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                        {authorInfo.socials.linkedin && (
+                            <Tooltip title="LinkedIn" arrow>
+                                <IconButton
+                                    component="a"
+                                    href={authorInfo.socials.linkedin}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="LinkedIn profile"
+                                    color="inherit"
+                                >
+                                    <LinkedInIcon />
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                        {authorInfo.socials.twitter && (
+                            <Tooltip title="Twitter" arrow>
+                                <IconButton
+                                    component="a"
+                                    href={authorInfo.socials.twitter}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Twitter profile"
+                                    color="inherit"
+                                >
+                                    <TwitterIcon />
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                    </Box>
+                </Box>
+            )}
+            {/* --- КОНЕЦ СЕКЦИИ АВТОРА --- */}
 
             {/* --- Dialogs --- */}
-            {/* Dialogs use MuiDialogTitle, MuiDialogContent, MuiDialogActions which are styled via theme overrides */}
             <Dialog open={openCommentDialog} onClose={handleCloseCommentDialog} fullWidth maxWidth="sm">
-                <DialogTitle>Add Comment</DialogTitle>
-                {/* Ensure padding top is applied correctly */}
+                <DialogTitle>Добавить Комментарий</DialogTitle>
                 <DialogContent sx={{ pt: "20px !important" }}>
-                    {/* TextField uses theme overrides */}
-                    <TextField autoFocus margin="dense" id="comment-text" label="Comment Text" type="text" fullWidth multiline rows={4} variant="outlined" value={commentText} onChange={(e) => setCommentText(e.target.value)} required />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="comment-text"
+                        label="Текст комментария"
+                        type="text"
+                        fullWidth
+                        multiline
+                        rows={4}
+                        variant="outlined"
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        required
+                    />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseCommentDialog} color="secondary">Cancel</Button>
-                    <Button onClick={handleSubmitComment} variant="contained" color="primary" disabled={!commentText.trim()}>Add</Button>
+                    <Button onClick={handleCloseCommentDialog} color="secondary">Отмена</Button>
+                    <Button onClick={handleSubmitComment} variant="contained" color="primary" disabled={!commentText.trim()}>Добавить</Button>
                 </DialogActions>
             </Dialog>
 
             <Dialog open={openTagDialog} onClose={handleCloseTagDialog} fullWidth maxWidth="sm">
-                <DialogTitle>Add Tag to Article</DialogTitle>
+                <DialogTitle>Добавить Тег к Статье</DialogTitle>
                 <DialogContent sx={{ pt: "20px !important" }}>
-                    {/* Container for available tags */}
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
                         {(() => {
                             const currentArticleTags = tagsMap[currentArticleId];
                             if (currentArticleTags === undefined && currentArticleId) {
-                                return <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', p: 2 }}><CircularProgress size={25} /></Box>;
+                                return <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', p: 2, opacity: 0.5 }}><CircularProgress size={25} /></Box>;
                             }
                             const currentArticleTagIds = (currentArticleTags || []).map(t => t.id);
                             const availableTags = allTags.filter(tag => !currentArticleTagIds.includes(tag.id));
 
                             if (availableTags.length === 0) {
-                                return <Typography variant="body2" color="text.secondary" sx={{ width: '100%', textAlign: 'center', mt: 2, mb: 1 }}>
-                                    {allTags.length === 0 ? "Tag list is empty." : "All available tags already added."}
+                                return <Typography variant="body2" color="text.secondary" sx={{ width: '100%', textAlign: 'center', mt: 2, mb: 1, opacity: 1 }}>
+                                    {allTags.length === 0 ? "Список тегов пуст." : "Все доступные теги уже добавлены."}
                                 </Typography>;
                             }
                             return availableTags.map((tag) => (
@@ -488,7 +545,6 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
                                     label={tag.name}
                                     clickable
                                     onClick={() => setSelectedTag(tag)}
-                                    // Chip appearance depends on theme + selection state
                                     color="primary"
                                     variant={selectedTag?.id === tag.id ? "filled" : "outlined"}
                                     sx={{ cursor: 'pointer' }}
@@ -498,9 +554,8 @@ const ArticleList = ({ onEdit, onDelete, refreshFlag }) => {
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseTagDialog} color="secondary">Cancel</Button>
-                    {/* Disable button if no tag is selected */}
-                    <Button onClick={handleSubmitTag} variant="contained" color="primary" disabled={!selectedTag}>Add Selected Tag</Button>
+                    <Button onClick={handleCloseTagDialog} color="secondary">Отмена</Button>
+                    <Button onClick={handleSubmitTag} variant="contained" color="primary" disabled={!selectedTag}>Добавить тэг</Button>
                 </DialogActions>
             </Dialog>
         </>
