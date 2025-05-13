@@ -183,8 +183,7 @@ const ArticleDetail = ({ onArticleDeleted }) => {
                                     p: 2,
                                 }}
                             >
-                                {/* Этот Box содержит поле ввода и строку с кол-вом символов/кнопками */}
-                                {/* Его нижний отступ (mb) остался прежним */}
+
                                 <Box sx={{ mb: (comments && comments.length > 0) ? 2 : 0 }}>
                                     <TextField
                                         id="inline-comment-input"
@@ -199,7 +198,6 @@ const ArticleDetail = ({ onArticleDeleted }) => {
                                         inputProps={{ maxLength: 500 }}
                                         disabled={isSubmittingComment}
                                     />
-                                    {/* ИЗМЕНЕНИЕ ЗДЕСЬ: mt: 2 заменено обратно на mt: 0.5 */}
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 0.5 }}>
                                         <Typography variant="caption" color="text.secondary">
                                             {`${commentText.length}/500`}
@@ -254,10 +252,6 @@ const ArticleDetail = ({ onArticleDeleted }) => {
                                         variant="body2"
                                         color="text.secondary"
                                         sx={{
-                                            // Этот отступ (pt) контролирует отступ перед "Комментариев пока нет",
-                                            // если поле ввода пустое, но не влияет на отступ после строки с кнопками,
-                                            // если комментарии есть. Отступ после строки с кнопками
-                                            // контролируется mb родительского Box выше.
                                             pt: (commentText.trim() || isSubmittingComment) ? 1.5 : 0,
                                             textAlign: 'center',
                                         }}
