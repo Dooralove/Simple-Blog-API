@@ -13,22 +13,22 @@ import {
     Grid,
     Chip,
     Tooltip,
-    useTheme,
+    useTheme, // theme все еще может быть нужен для других частей или если вы захотите вернуть borderRadius
     Fade,
     IconButton,
     Select,
     MenuItem,
     FormControl,
     InputLabel,
-    Paper,
+    // Paper, // Paper больше не используется для обертки фильтра
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import ClearIcon from '@mui/icons-material/Clear';
-import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt"; // Added
-import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt"; // Added
+import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
+import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 
 
 // --- Helper function to truncate text to 50 words ---
@@ -44,7 +44,7 @@ const truncateWords = (text, limit) => {
 // --- Component Definition ---
 const ArticleList = ({ refreshFlag }) => {
     // --- Hooks ---
-    const theme = useTheme();
+    const theme = useTheme(); // theme может быть полезен для других стилей или если решите вернуть часть стилей Paper
 
     // --- State ---
     const [articles, setArticles] = useState([]);
@@ -122,16 +122,15 @@ const ArticleList = ({ refreshFlag }) => {
     // --- Render ---
     return (
         <>
-            {/* --- Tag Filter --- */}
-            <Paper
-                elevation={1}
+            {/* --- Tag Filter (без Paper, но с Box для сохранения структуры) --- */}
+            <Box
                 sx={{
-                    p: 2,
-                    mb: 3,
+                    p: 2, // Сохраняем внутренние отступы, которые были у Paper
+                    mb: 3, // Сохраняем нижний отступ, который был у Paper
                     display: 'flex',
                     alignItems: 'center',
                     gap: 2,
-                    borderRadius: theme.shape.borderRadius,
+                    // borderRadius: theme.shape.borderRadius, // Можно убрать, если не нужна рамка, или оставить для консистентности
                 }}
             >
                 <FormControl fullWidth variant="outlined" size="small" disabled={tagsLoading}>
@@ -185,7 +184,7 @@ const ArticleList = ({ refreshFlag }) => {
                         </IconButton>
                     </Tooltip>
                 )}
-            </Paper>
+            </Box>
 
             {/* --- Loading/Status Display --- */}
             {isLoading ? (

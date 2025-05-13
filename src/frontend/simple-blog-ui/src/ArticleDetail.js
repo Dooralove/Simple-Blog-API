@@ -1,4 +1,3 @@
-// --- Imports ---
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -13,14 +12,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArticleForm from './ArticleForm';
 
-// --- Component Definition ---
 const ArticleDetail = ({ onArticleDeleted }) => {
-    // --- Hooks ---
     const { articleId } = useParams();
     const navigate = useNavigate();
     const theme = useTheme();
 
-    // --- State ---
     const [article, setArticle] = useState(null);
     const [comments, setComments] = useState([]);
     const [tags, setTags] = useState([]);
@@ -31,7 +27,6 @@ const ArticleDetail = ({ onArticleDeleted }) => {
     const [commentText, setCommentText] = useState("");
     const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
-    // --- Data Fetching ---
     const fetchArticleData = useCallback(async () => {
         setError(null);
         try {
@@ -57,14 +52,12 @@ const ArticleDetail = ({ onArticleDeleted }) => {
         }
     }, [articleId]);
 
-    // --- Effects ---
     useEffect(() => {
         window.scrollTo(0, 0);
         setIsLoading(true);
         fetchArticleData();
     }, [articleId, fetchArticleData]);
 
-    // --- Action Handlers ---
     const handleAction = async (actionUrl, method = "post", successCallback) => {
         try {
             await axios({ method, url: actionUrl });
@@ -80,7 +73,6 @@ const ArticleDetail = ({ onArticleDeleted }) => {
     const handleDislike = () => handleAction( `http://localhost:8080/articles/${articleId}/dislike`, "post", () => setArticle(prev => prev ? { ...prev, dislikes: (prev.dislikes || 0) + 1 } : null) );
     const handleDeleteArticle = async () => { if (window.confirm("Вы уверены, что хотите удалить эту статью? Это действие необратимо.")) { await handleAction( `http://localhost:8080/articles/${articleId}`, "delete", () => { if (onArticleDeleted) onArticleDeleted(articleId); navigate("/"); }); } };
 
-    // --- Comment Handlers ---
     const handleCancelComment = () => setCommentText("");
 
     const handleSubmitComment = async () => {
@@ -100,7 +92,6 @@ const ArticleDetail = ({ onArticleDeleted }) => {
         }
     };
 
-    // --- Edit Mode Handlers ---
     const handleEditClick = () => { setIsEditing(true); window.scrollTo(0, 0); };
 
     const handleFormSubmitSuccess = () => {
@@ -114,27 +105,21 @@ const ArticleDetail = ({ onArticleDeleted }) => {
         window.scrollTo(0, 0);
     };
 
-    // --- Loading State ---
     if (isLoading && !article && !isEditing) {
         return ( <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}> <CircularProgress color="primary" size={50} /> </Box> );
     }
 
-    // --- Article Not Found State ---
     if (!article && !error && !isLoading && !isEditing) {
         return <Alert severity="warning" sx={{ mt: 2 }}>Статья не найдена или произошла ошибка при загрузке.</Alert>;
     }
 
-    // --- Current Tags ---
     const currentArticleTags = tags;
 
-    // --- Render ---
     return (
         <>
             <Box>
-                {/* --- Error Alert --- */}
                 {error && ( <Alert severity="warning" sx={{ mb: 3 }} onClose={() => setError(null)}> {error} </Alert> )}
 
-                {/* --- Edit Mode View --- */}
                 {isEditing ? (
                     <ArticleForm
                         existingArticle={article}
@@ -142,9 +127,7 @@ const ArticleDetail = ({ onArticleDeleted }) => {
                         onCancel={handleFormCancelEdit}
                     />
                 ) : article ? (
-                    // --- Article Detail View ---
                     <Box>
-                        {/* --- Article Header and Actions --- */}
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, mb: 2, pb: 2, borderBottom: `1px solid ${theme.palette.divider}`, gap: { xs: 2, sm: 2 }, flexDirection: { xs: 'column', sm: 'row' }}}>
                             <Typography variant="h5" component="h1" gutterBottom={false} sx={{ mr: { sm: 2 }, flexGrow: 1, wordBreak: 'break-word', lineHeight: 1.3 }}>
                                 {article.title}
@@ -161,12 +144,10 @@ const ArticleDetail = ({ onArticleDeleted }) => {
                             </Box>
                         </Box>
 
-                        {/* --- Article Content --- */}
                         <Typography variant="body1" sx={{ mt: 3, mb: 4, whiteSpace: 'pre-wrap', color: theme.palette.text.primary, lineHeight: 1.7 }}>
                             {article.content}
                         </Typography>
 
-                        {/* --- Tags Section --- */}
                         <Box sx={{ mt: 3, mb: 4, borderTop: `1px solid ${theme.palette.divider}`, pt: 3 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 1 }}>
                                 <Typography variant="h6" component="h3" sx={{ fontWeight: 'medium' }}>Теги:</Typography>
@@ -186,7 +167,6 @@ const ArticleDetail = ({ onArticleDeleted }) => {
                             ) : ( <Typography variant="body2" color="text.secondary">Теги не назначены.</Typography> )}
                         </Box>
 
-                        {/* --- Comments Section --- */}
                         <Box sx={{ mt: 4, borderTop: `1px solid ${theme.palette.divider}`, pt: 3 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                                 <Typography variant="h6" component="h3" sx={{ fontWeight: 'medium' }}>
@@ -194,18 +174,17 @@ const ArticleDetail = ({ onArticleDeleted }) => {
                                 </Typography>
                             </Box>
 
-                            {/* --- Add Comment Form & List Container --- */}
                             <Box
                                 sx={{
                                     border: `1px solid ${theme.palette.divider}`,
-
                                     borderRadius: 2,
                                     bgcolor: theme.palette.background.paper,
                                     boxShadow: theme.shadows[1],
                                     p: 2,
                                 }}
                             >
-                                {/* --- Add Comment Form --- */}
+                                {/* Этот Box содержит поле ввода и строку с кол-вом символов/кнопками */}
+                                {/* Его нижний отступ (mb) остался прежним */}
                                 <Box sx={{ mb: (comments && comments.length > 0) ? 2 : 0 }}>
                                     <TextField
                                         id="inline-comment-input"
@@ -217,29 +196,34 @@ const ArticleDetail = ({ onArticleDeleted }) => {
                                         value={commentText}
                                         onChange={(e) => setCommentText(e.target.value)}
                                         placeholder="Напишите что-нибудь..."
-                                        sx={{ mb: 1.5 }}
-                                        helperText={`${commentText.length}/500`}
                                         inputProps={{ maxLength: 500 }}
                                         disabled={isSubmittingComment}
                                     />
-                                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                                        {commentText.trim() && (
-                                            <Button onClick={handleCancelComment} color="secondary" size="small" disabled={isSubmittingComment}>Очистить</Button>
-                                        )}
-                                        <Button
-                                            onClick={handleSubmitComment}
-                                            variant="contained"
-                                            color="primary"
-                                            size="small"
-                                            disabled={!commentText.trim() || isSubmittingComment}
-                                            startIcon={isSubmittingComment ? <CircularProgress size={16} color="inherit" /> : null}
-                                        >
-                                            {isSubmittingComment ? "Отправка..." : "Отправить"}
-                                        </Button>
+                                    {/* ИЗМЕНЕНИЕ ЗДЕСЬ: mt: 2 заменено обратно на mt: 0.5 */}
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 0.5 }}>
+                                        <Typography variant="caption" color="text.secondary">
+                                            {`${commentText.length}/500`}
+                                        </Typography>
+                                        <Box sx={{ display: 'flex', gap: 1 }}>
+                                            {commentText.trim() && (
+                                                <Button onClick={handleCancelComment} color="secondary" size="small" disabled={isSubmittingComment}>
+                                                    Очистить
+                                                </Button>
+                                            )}
+                                            <Button
+                                                onClick={handleSubmitComment}
+                                                variant="contained"
+                                                color="primary"
+                                                size="small"
+                                                disabled={!commentText.trim() || isSubmittingComment}
+                                                startIcon={isSubmittingComment ? <CircularProgress size={16} color="inherit" /> : null}
+                                            >
+                                                {isSubmittingComment ? "Отправка..." : "Отправить"}
+                                            </Button>
+                                        </Box>
                                     </Box>
                                 </Box>
 
-                                {/* --- Comments List --- */}
                                 {(comments && comments.length > 0) ? (
                                     <List sx={{ p: 0 }}>
                                         {comments.map((comment, index) => (
@@ -270,6 +254,10 @@ const ArticleDetail = ({ onArticleDeleted }) => {
                                         variant="body2"
                                         color="text.secondary"
                                         sx={{
+                                            // Этот отступ (pt) контролирует отступ перед "Комментариев пока нет",
+                                            // если поле ввода пустое, но не влияет на отступ после строки с кнопками,
+                                            // если комментарии есть. Отступ после строки с кнопками
+                                            // контролируется mb родительского Box выше.
                                             pt: (commentText.trim() || isSubmittingComment) ? 1.5 : 0,
                                             textAlign: 'center',
                                         }}
@@ -281,7 +269,6 @@ const ArticleDetail = ({ onArticleDeleted }) => {
                         </Box>
                     </Box>
                 ) : (
-                    // --- Article Unavailable Fallback ---
                     !error && !isLoading && !isEditing && <Alert severity="info" sx={{ mt: 2 }}>Статья не доступна.</Alert>
                 )}
             </Box>
