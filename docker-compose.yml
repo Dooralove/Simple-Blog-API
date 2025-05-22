@@ -1,0 +1,91 @@
+# SimpleBlogAPI/docker-compose.yml
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13-alpine
+    container_name: simple-blog-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: simple_blog_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD} # Убедись, что эта переменная определена в .env файле
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-simple_blog_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  app: # Backend-сервис (Java Spring Boot)
+    build:
+      # Контекст сборки - это папка, где лежит Dockerfile для бэкенда
+      # и откуда будут копироваться файлы (например, JAR)
+      context: .. # Путь к модулю/папке твоего бэкенда
+      dockerfile: ../Dockerfile     # Имя Dockerfile для бэкенда, находящегося в ./Simple-Blog-API/
+      # Если ты используешь ARG в Dockerfile бэкенда для пути к JAR,
+      # ты можешь передать его здесь или он будет взят по умолчанию из Dockerfile.
+      # Пример передачи аргумента, если Dockerfile бэкенда ожидает JAR_FILE_PATH:
+      # args:
+      #   JAR_FILE_PATH: target/your-actual-jar-name.jar # <--- ЗАМЕНИ НА АКТУАЛЬНЫЙ ПУТЬ И ИМЯ JAR
+    container_name: simple-blog-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/simple_blog_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update # Будь осторожен с 'update' на продакшене
+      LOGGING_FILE_NAME: /app/logs/app.log
+    volumes:
+      - app_logs:/app/logs
+      # Если тебе нужен hot-reload для Java (например, с Spring Boot DevTools),
+      # и исходники лежат в Simple-Blog-API/src, то можешь раскомментировать:
+      # - ./Simple-Blog-API/src:/app/src
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  frontend: # Frontend-сервис (React)
+    build:
+      # Контекст сборки - это папка, где лежит Dockerfile для фронтенда
+      # и все его исходники (package.json, src/, public/)
+      context: src/frontend/simple-blog-ui # Путь к твоему React-проекту
+      dockerfile: src/frontend/simple-blog-ui/Dockerfile # Имя Dockerfile, находящегося в ./Simple-Blog-API/frontend/simple-blog-ui/
+    container_name: simple-blog-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      # Монтируем исходный код фронтенда в контейнер для hot-reloading
+      # Пути относительны этому docker-compose.yml файлу
+      - ./Simple-Blog-API/src/frontend/simple-blog-ui/src:/app/src
+      - ./Simple-Blog-API/src/frontend/simple-blog-ui/public:/app/public
+      # Этот анонимный вольюм важен, чтобы node_modules, установленные ВНУТРИ контейнера,
+      # не перезаписывались пустой (или существующей) папкой node_modules с хоста.
+      - /app/node_modules
+    environment:
+      # CHOKIDAR_USEPOLLING=true часто нужен для корректной работы hot-reloading
+      # файловой системы, когда используются Docker volumes.
+      - CHOKIDAR_USEPOLLING=true
+      # Если твое React приложение использует переменную окружения для API URL:
+      # REACT_APP_API_BASE_URL: http://localhost:8080
+      # Запросы из браузера (с localhost:3000) на localhost:8080 будут работать,
+      # т.к. порт 8080 бэкенда проброшен на хост.
+    depends_on:
+      - app # Фронтенд обычно зависит от бэкенда, чтобы API было доступно
+    networks:
+      - app-network
+
+volumes:
+  db_data: # Том для персистентного хранения данных PostgreSQL
+  app_logs: # Том для логов бэкенд-приложения
+
+networks:
+  app-network: # Пользовательская сеть для связи между контейнерами
+    driver: bridge
